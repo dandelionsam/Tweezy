@@ -2,9 +2,7 @@
 
 # Tweezy
 
-> A lightweight macOS menu bar app that monitors your clipboard and provides quick-access actions via a global hotkey.
-
----
+A lightweight macOS menu bar app that monitors your clipboard and provides quick-access actions via a global hotkey.
 
 ## Requirements
 
@@ -14,34 +12,13 @@
 | Xcode | 15.0 or later |
 | Swift | 5.0 or later |
 
----
-
-## 🗂️ Project Structure
-
-```
-Tweezy/
-├── TweezyApp.swift          # App entry point
-├── ContentView.swift        # Main SwiftUI view
-├── Models.swift             # Data models
-├── ClipboardMonitor.swift   # Clipboard monitoring logic
-├── GlobalHotkey.swift       # Global hotkey registration & handling
-├── Info.plist               # App configuration & permissions
-├── Tweezy.entitlements      # App sandbox entitlements
-├── Assets.xcassets          # Icons and image assets
-└── Localizable.strings      # Localized strings (8 languages)
-```
-
----
-
-## Features
+## 💠 Features
 
 - 📋 **Clipboard Monitoring** — Automatically watches for clipboard changes in the background
 - ⌨️ **Global Hotkey** — Trigger the app from anywhere on your system with a configurable shortcut
 - 🖥️ **Menu Bar App** — Runs silently as a background app (`LSUIElement = true`), accessible from the macOS menu bar
 - 🌍 **Localization** — Fully localized in **8 languages**: English, Italian, Chinese (Simplified), Korean, Russian, Spanish, and Japanese
 - 🔒 **Accessibility Integration** — Uses macOS Accessibility APIs to simulate paste actions (`Cmd+V`)
-
----
 
 ## 🔓 Permissions
 
@@ -54,15 +31,11 @@ Tweezy requires the following macOS permission:
 On first launch, macOS will prompt you to grant Accessibility access. You can manage this at any time in:
 **System Settings → Privacy & Security → Accessibility**
 
----
-
 ## 📦 Dependencies
 
 Tweezy has **no external dependencies**. It is built entirely with native Apple frameworks.
 
----
-
-## 🎙️ Localization
+## 🗣️ Localization
 
 The app is localized in the following languages:
 
@@ -75,10 +48,6 @@ The app is localized in the following languages:
 | 🇷🇺 `ru` | Russian |
 | 🇪🇸 `es` | Spanish |
 | 🇯🇵 `ja` | Japanese |
-
-To add a new language, add a new `.lproj/Localizable.strings` file and register it in `Info.plist` under `CFBundleLocalizations`.
-
----
 
 ## 📋 License
 
