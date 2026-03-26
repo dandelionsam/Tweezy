@@ -1,0 +1,41 @@
+/* Menu tray */
+"menu.count.one" = "1 elemento copiado";
+"menu.count.many" = "%d elementos copiados";
+"menu.clear_all" = "Borrar todo";
+"menu.quit" = "Salir de la app";
+
+/* Alert */
+"alert.clear.title" = "¿Borrar todo el historial?";
+"alert.clear.message" = "Los elementos fijados se conservarán.";
+"alert.clear.confirm" = "Borrar";
+"alert.clear.cancel" = "Cancelar";
+
+/* Panel */
+"panel.search.placeholder" = "Buscar en el portapapeles…";
+"panel.trash.tooltip" = "Borrar todo el historial";
+"panel.footer" = "1-9, 0 pegar  •  ↑↓ navegar  •  ↵ pegar  •  ⎋ cerrar";
+"panel.empty" = "Sin elementos";
+"panel.no_results" = "Sin resultados";
+
+/* Accessibility */
+"accessibility.clipboard_manager" = "Tweezy";
+"accessibility.trash" = "Borrar todo";
+
+/* Item */
+"item.empty" = "(vacío)";
+
+/* Login item */
+"login.prompt.title" = "¿Iniciar ClipboardManager al arrancar?";
+"login.prompt.message" = "Puedes cambiarlo en Configuración del sistema → General → Elementos de inicio de sesión.";
+"login.prompt.enable" = "Sí, iniciar al arrancar";
+"login.prompt.skip" = "Ahora no";
+"section.pinned" = "Fijados";
+"pin.add" = "Fijar";
+"pin.remove" = "Desfijar";
+"pin.limit" = "Puedes fijar un máximo de 3 elementos.";
+
+/* Pinned section */
+"section.pinned" = "Fijados";
+"pin.add" = "Fijar";
+"pin.remove" = "Desfijar";
+"pin.limit" = "Puedes fijar un máximo de 3 elementos.";

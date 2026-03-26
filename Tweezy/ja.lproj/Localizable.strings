@@ -1,0 +1,41 @@
+/* Menu tray */
+"menu.count.one" = "1件コピー済み";
+"menu.count.many" = "%d件コピー済み";
+"menu.clear_all" = "すべて消去";
+"menu.quit" = "アプリを終了";
+
+/* Alert */
+"alert.clear.title" = "履歴をすべて消去しますか？";
+"alert.clear.message" = "ピン留めされた項目は保持されます。";
+"alert.clear.confirm" = "消去";
+"alert.clear.cancel" = "キャンセル";
+
+/* Panel */
+"panel.search.placeholder" = "クリップボードを検索…";
+"panel.trash.tooltip" = "履歴をすべて消去";
+"panel.footer" = "1-9、0でペースト  •  ↑↓でナビゲート  •  ↵でペースト  •  ⎋で閉じる";
+"panel.empty" = "項目なし";
+"panel.no_results" = "結果なし";
+
+/* Accessibility */
+"accessibility.clipboard_manager" = "Tweezy";
+"accessibility.trash" = "すべて消去";
+
+/* Item */
+"item.empty" = "（空）";
+
+/* Login item */
+"login.prompt.title" = "ログイン時にClipboardManagerを起動しますか？";
+"login.prompt.message" = "システム設定 → 一般 → ログイン項目からいつでも変更できます。";
+"login.prompt.enable" = "はい、ログイン時に起動";
+"login.prompt.skip" = "後で";
+"section.pinned" = "固定済み";
+"pin.add" = "固定";
+"pin.remove" = "固定解除";
+"pin.limit" = "固定できる項目は最大3つです。";
+
+/* Pinned section */
+"section.pinned" = "固定済み";
+"pin.add" = "固定";
+"pin.remove" = "固定解除";
+"pin.limit" = "固定できる項目は最大3つです。";

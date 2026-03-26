@@ -1,0 +1,41 @@
+/* Menu tray */
+"menu.count.one" = "已复制 1 条";
+"menu.count.many" = "已复制 %d 条";
+"menu.clear_all" = "清除全部";
+"menu.quit" = "退出应用";
+
+/* Alert */
+"alert.clear.title" = "清除全部历史记录？";
+"alert.clear.message" = "已固定的条目将会保留。";
+"alert.clear.confirm" = "清除";
+"alert.clear.cancel" = "取消";
+
+/* Panel */
+"panel.search.placeholder" = "搜索剪贴板…";
+"panel.trash.tooltip" = "清除全部历史记录";
+"panel.footer" = "1-9、0 粘贴  •  ↑↓ 导航  •  ↵ 粘贴  •  ⎋ 关闭";
+"panel.empty" = "暂无内容";
+"panel.no_results" = "无匹配结果";
+
+/* Accessibility */
+"accessibility.clipboard_manager" = "Tweezy";
+"accessibility.trash" = "清除全部";
+
+/* Item */
+"item.empty" = "（空）";
+
+/* Login item */
+"login.prompt.title" = "登录时自动启动 ClipboardManager？";
+"login.prompt.message" = "您可以随时在系统设置 → 通用 → 登录项中更改此设置。";
+"login.prompt.enable" = "是，登录时启动";
+"login.prompt.skip" = "暂不";
+"section.pinned" = "已固定";
+"pin.add" = "固定";
+"pin.remove" = "取消固定";
+"pin.limit" = "最多可固定 3 个条目。";
+
+/* Pinned section */
+"section.pinned" = "已固定";
+"pin.add" = "固定";
+"pin.remove" = "取消固定";
+"pin.limit" = "最多可固定 3 个条目。";

@@ -1,0 +1,41 @@
+/* Menu tray */
+"menu.count.one" = "1 elemento copiato";
+"menu.count.many" = "%d elementi copiati";
+"menu.clear_all" = "Cancella tutto";
+"menu.quit" = "Esci dall'app";
+
+/* Alert */
+"alert.clear.title" = "Cancella tutto lo storico?";
+"alert.clear.message" = "Gli elementi con pin verranno mantenuti.";
+"alert.clear.confirm" = "Cancella";
+"alert.clear.cancel" = "Annulla";
+
+/* Panel */
+"panel.search.placeholder" = "Cerca negli appunti…";
+"panel.trash.tooltip" = "Cancella tutto lo storico";
+"panel.footer" = "1-9, 0 per incollare  •  ↑↓ per navigare  •  ↵ per incollare  •  ⎋ per chiudere";
+"panel.empty" = "Nessun elemento";
+"panel.no_results" = "Nessun risultato";
+
+/* Accessibility */
+"accessibility.clipboard_manager" = "Tweezy";
+"accessibility.trash" = "Cancella tutto";
+
+/* Item */
+"item.empty" = "(vuoto)";
+
+/* Login item */
+"login.prompt.title" = "Avvia ClipboardManager al login?";
+"login.prompt.message" = "Puoi modificare questa impostazione in qualsiasi momento da Impostazioni di Sistema → Generali → Elementi di login.";
+"login.prompt.enable" = "Sì, avvia al login";
+"login.prompt.skip" = "Non ora";
+"section.pinned" = "Fissati";
+"pin.add" = "Fissa";
+"pin.remove" = "Rimuovi";
+"pin.limit" = "Puoi fissare al massimo 3 elementi.";
+
+/* Pinned section */
+"section.pinned" = "Fissati";
+"pin.add" = "Fissa";
+"pin.remove" = "Rimuovi";
+"pin.limit" = "Puoi fissare al massimo 3 elementi.";

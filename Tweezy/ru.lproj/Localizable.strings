@@ -1,0 +1,41 @@
+/* Menu tray */
+"menu.count.one" = "1 элемент скопирован";
+"menu.count.many" = "%d элементов скопировано";
+"menu.clear_all" = "Очистить всё";
+"menu.quit" = "Выйти из приложения";
+
+/* Alert */
+"alert.clear.title" = "Очистить всю историю?";
+"alert.clear.message" = "Закреплённые элементы будут сохранены.";
+"alert.clear.confirm" = "Очистить";
+"alert.clear.cancel" = "Отмена";
+
+/* Panel */
+"panel.search.placeholder" = "Поиск в буфере обмена…";
+"panel.trash.tooltip" = "Очистить всю историю";
+"panel.footer" = "1-9, 0 — вставить  •  ↑↓ — навигация  •  ↵ — вставить  •  ⎋ — закрыть";
+"panel.empty" = "Нет элементов";
+"panel.no_results" = "Ничего не найдено";
+
+/* Accessibility */
+"accessibility.clipboard_manager" = "Tweezy";
+"accessibility.trash" = "Очистить всё";
+
+/* Item */
+"item.empty" = "(пусто)";
+
+/* Login item */
+"login.prompt.title" = "Запускать ClipboardManager при входе?";
+"login.prompt.message" = "Изменить это можно в любое время в Настройках системы → Основные → Объекты входа.";
+"login.prompt.enable" = "Да, запускать при входе";
+"login.prompt.skip" = "Не сейчас";
+"section.pinned" = "Закреплённые";
+"pin.add" = "Закрепить";
+"pin.remove" = "Открепить";
+"pin.limit" = "Можно закрепить не более 3 элементов.";
+
+/* Pinned section */
+"section.pinned" = "Закреплённые";
+"pin.add" = "Закрепить";
+"pin.remove" = "Открепить";
+"pin.limit" = "Можно закрепить не более 3 элементов.";

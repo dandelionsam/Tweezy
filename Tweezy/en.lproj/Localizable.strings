@@ -1,0 +1,41 @@
+/* Menu tray */
+"menu.count.one" = "1 item copied";
+"menu.count.many" = "%d items copied";
+"menu.clear_all" = "Clear All";
+"menu.quit" = "Quit App";
+
+/* Alert */
+"alert.clear.title" = "Clear entire history?";
+"alert.clear.message" = "Pinned items will be kept.";
+"alert.clear.confirm" = "Clear";
+"alert.clear.cancel" = "Cancel";
+
+/* Panel */
+"panel.search.placeholder" = "Search clipboard…";
+"panel.trash.tooltip" = "Clear entire history";
+"panel.footer" = "1-9, 0 to paste  •  ↑↓ to navigate  •  ↵ to paste  •  ⎋ to close";
+"panel.empty" = "No items";
+"panel.no_results" = "No results";
+
+/* Accessibility */
+"accessibility.clipboard_manager" = "Tweezy";
+"accessibility.trash" = "Clear All";
+
+/* Item */
+"item.empty" = "(empty)";
+
+/* Login item */
+"login.prompt.title" = "Launch ClipboardManager at login?";
+"login.prompt.message" = "You can change this at any time in System Settings → General → Login Items.";
+"login.prompt.enable" = "Yes, launch at login";
+"login.prompt.skip" = "Not now";
+"section.pinned" = "Pinned";
+"pin.add" = "Pin";
+"pin.remove" = "Unpin";
+"pin.limit" = "You can pin up to 3 items.";
+
+/* Pinned section */
+"section.pinned" = "Pinned";
+"pin.add" = "Pin";
+"pin.remove" = "Unpin";
+"pin.limit" = "You can pin up to 3 items.";

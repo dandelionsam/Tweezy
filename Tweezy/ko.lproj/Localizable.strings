@@ -1,0 +1,41 @@
+/* Menu tray */
+"menu.count.one" = "1개 복사됨";
+"menu.count.many" = "%d개 복사됨";
+"menu.clear_all" = "전체 삭제";
+"menu.quit" = "앱 종료";
+
+/* Alert */
+"alert.clear.title" = "전체 기록을 삭제하시겠습니까?";
+"alert.clear.message" = "고정된 항목은 유지됩니다.";
+"alert.clear.confirm" = "삭제";
+"alert.clear.cancel" = "취소";
+
+/* Panel */
+"panel.search.placeholder" = "클립보드 검색…";
+"panel.trash.tooltip" = "전체 기록 삭제";
+"panel.footer" = "1-9, 0 붙여넣기  •  ↑↓ 탐색  •  ↵ 붙여넣기  •  ⎋ 닫기";
+"panel.empty" = "항목 없음";
+"panel.no_results" = "결과 없음";
+
+/* Accessibility */
+"accessibility.clipboard_manager" = "Tweezy";
+"accessibility.trash" = "전체 삭제";
+
+/* Item */
+"item.empty" = "(비어 있음)";
+
+/* Login item */
+"login.prompt.title" = "로그인 시 ClipboardManager를 시작할까요?";
+"login.prompt.message" = "시스템 설정 → 일반 → 로그인 항목에서 언제든지 변경할 수 있습니다.";
+"login.prompt.enable" = "예, 로그인 시 시작";
+"login.prompt.skip" = "나중에";
+"section.pinned" = "고정됨";
+"pin.add" = "고정";
+"pin.remove" = "고정 해제";
+"pin.limit" = "최대 3개의 항목을 고정할 수 있습니다.";
+
+/* Pinned section */
+"section.pinned" = "고정됨";
+"pin.add" = "고정";
+"pin.remove" = "고정 해제";
+"pin.limit" = "최대 3개의 항목을 고정할 수 있습니다.";
