@@ -1,3 +1,4 @@
+<img width="128" height="128" alt="Logo Big-1" src="https://github.com/user-attachments/assets/6db9d44f-2820-4560-bb5a-17899571569e" style="margin: 0 auto;" />
 
 # Tweezy
 
@@ -15,7 +16,7 @@
 
 ---
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 Tweezy/
@@ -42,7 +43,7 @@ Tweezy/
 
 ---
 
-## Permissions
+## 🔓 Permissions
 
 Tweezy requires the following macOS permission:
 
@@ -55,30 +56,30 @@ On first launch, macOS will prompt you to grant Accessibility access. You can ma
 
 ---
 
-## Dependencies
+## 📦 Dependencies
 
 Tweezy has **no external dependencies**. It is built entirely with native Apple frameworks.
 
 ---
 
-## Localization
+## 🎙️ Localization
 
 The app is localized in the following languages:
 
 | Code | Language |
 |------|----------|
-| `en` | English |
-| `it` | Italian |
-| `zh-Hans` | Chinese (Simplified) |
-| `ko` | Korean |
-| `ru` | Russian |
-| `es` | Spanish |
-| `ja` | Japanese |
+| 🇬🇧🇺🇸 `en` | English |
+| 🇮🇹 `it` | Italian |
+| 🇨🇳 `zh-Hans` | Chinese (Simplified) |
+| 🇰🇵🇰🇷 `ko` | Korean |
+| 🇷🇺 `ru` | Russian |
+| 🇪🇸 `es` | Spanish |
+| 🇯🇵 `ja` | Japanese |
 
 To add a new language, add a new `.lproj/Localizable.strings` file and register it in `Info.plist` under `CFBundleLocalizations`.
 
 ---
 
-## License
+## 📋 License
 
 Copyright © 2026 Tweezy. All rights reserved.
