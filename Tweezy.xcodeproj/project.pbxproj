@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A001 /* TweezyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101; };
-		A002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A102; };
-		A003 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103; };
-		A004 /* ClipboardMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A104; };
-		A005 /* GlobalHotkey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A105; };
-		A010 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A200L; };
-		A011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A300A; };
+		A001 /* TweezyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101 /* TweezyApp.swift */; };
+		A002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A102 /* ContentView.swift */; };
+		A003 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103 /* Models.swift */; };
+		A004 /* ClipboardMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A104 /* ClipboardMonitor.swift */; };
+		A005 /* GlobalHotkey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A105 /* GlobalHotkey.swift */; };
+		A010 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A200L /* Localizable.strings */; };
+		A011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A300A /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,26 +25,24 @@
 		A105 /* GlobalHotkey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHotkey.swift; sourceTree = "<group>"; };
 		A106 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A107 /* Tweezy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tweezy.entitlements; sourceTree = "<group>"; };
-		A200 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = "Base.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		A201 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = "it.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		A202 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		A200 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A201 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A202 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A203 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		A204 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = "ko.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		A205 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = "ru.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		A206 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = "es.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		A207 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = "ja.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		A204 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A205 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A206 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A207 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A300A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FC77044A2F7567C200FD10D5 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXVariantGroup section */
-		A200L /* Localizable.strings */ = {isa = PBXVariantGroup; children = (A200, A201, A202, A203, A204, A205, A206, A207); name = Localizable.strings; sourceTree = "<group>"; };
-/* End PBXVariantGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A300F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -52,18 +50,34 @@
 /* Begin PBXGroup section */
 		A300 = {
 			isa = PBXGroup;
-			children = (A301, A302);
+			children = (
+				FC77044A2F7567C200FD10D5 /* README.md */,
+				A301 /* Tweezy */,
+				A302 /* Products */,
+			);
 			sourceTree = "<group>";
 		};
 		A301 /* Tweezy */ = {
 			isa = PBXGroup;
-			children = (A101, A102, A103, A104, A105, A106, A107, A200L, A300A);
+			children = (
+				A101 /* TweezyApp.swift */,
+				A102 /* ContentView.swift */,
+				A103 /* Models.swift */,
+				A104 /* ClipboardMonitor.swift */,
+				A105 /* GlobalHotkey.swift */,
+				A106 /* Info.plist */,
+				A107 /* Tweezy.entitlements */,
+				A200L /* Localizable.strings */,
+				A300A /* Assets.xcassets */,
+			);
 			path = Tweezy;
 			sourceTree = "<group>";
 		};
 		A302 /* Products */ = {
 			isa = PBXGroup;
-			children = (A100);
+			children = (
+				A100 /* Tweezy.app */,
+			);
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -72,36 +86,57 @@
 /* Begin PBXNativeTarget section */
 		A400 /* Tweezy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A500;
-			buildPhases = (A300F, A401, A402);
-			buildRules = ();
-			dependencies = ();
+			buildConfigurationList = A500 /* Build configuration list for PBXNativeTarget "Tweezy" */;
+			buildPhases = (
+				A300F /* Frameworks */,
+				A401 /* Sources */,
+				A402 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
 			name = Tweezy;
 			productName = Tweezy;
-			productReference = A100;
+			productReference = A100 /* Tweezy.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A600 = {
+		A600 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
-				TargetAttributes = { A400 = { CreatedOnToolsVersion = 15.0; }; };
+				TargetAttributes = {
+					A400 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
 			};
-			buildConfigurationList = A601;
+			buildConfigurationList = A601 /* Build configuration list for PBXProject "Tweezy" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
-			knownRegions = (Base, en, it, "zh-Hans", ko, ru, es, ja);
+			knownRegions = (
+				Base,
+				en,
+				it,
+				"zh-Hans",
+				ko,
+				ru,
+				es,
+				ja,
+			);
 			mainGroup = A300;
-			productRefGroup = A302;
+			productRefGroup = A302 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (A400);
+			targets = (
+				A400 /* Tweezy */,
+			);
 		};
 /* End PBXProject section */
 
@@ -109,7 +144,10 @@
 		A402 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (A010, A011);
+			files = (
+				A010 /* Localizable.strings in Resources */,
+				A011 /* Assets.xcassets in Resources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -118,10 +156,34 @@
 		A401 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (A001, A002, A003, A004, A005);
+			files = (
+				A001 /* TweezyApp.swift in Sources */,
+				A002 /* ContentView.swift in Sources */,
+				A003 /* Models.swift in Sources */,
+				A004 /* ClipboardMonitor.swift in Sources */,
+				A005 /* GlobalHotkey.swift in Sources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A200L /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A200 /* Base */,
+				A201 /* it */,
+				A202 /* en */,
+				A203 /* zh-Hans */,
+				A204 /* ko */,
+				A205 /* ru */,
+				A206 /* es */,
+				A207 /* ja */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		A501 /* Debug */ = {
@@ -133,7 +195,10 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)");
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -158,7 +223,7 @@
 			};
 			name = Release;
 		};
-		A503 /* Debug Target */ = {
+		A503 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -167,7 +232,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Tweezy/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourname.Tweezy;
@@ -178,7 +246,7 @@
 			};
 			name = Debug;
 		};
-		A504 /* Release Target */ = {
+		A504 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -187,7 +255,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Tweezy/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourname.Tweezy;
@@ -201,20 +272,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A500 = {
+		A500 /* Build configuration list for PBXNativeTarget "Tweezy" */ = {
 			isa = XCConfigurationList;
-			buildConfigurations = (A503, A504);
+			buildConfigurations = (
+				A503 /* Debug */,
+				A504 /* Release */,
+			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A601 = {
+		A601 /* Build configuration list for PBXProject "Tweezy" */ = {
 			isa = XCConfigurationList;
-			buildConfigurations = (A501, A502);
+			buildConfigurations = (
+				A501 /* Debug */,
+				A502 /* Release */,
+			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
-	rootObject = A600;
+	rootObject = A600 /* Project object */;
 }
