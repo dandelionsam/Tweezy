@@ -2,6 +2,7 @@
 "menu.count.one" = "已复制 1 条";
 "menu.count.many" = "已复制 %d 条";
 "menu.clear_all" = "清除全部";
+"menu.settings" = "设置";
 "menu.quit" = "退出应用";
 
 /* Alert */
@@ -39,3 +40,16 @@
 "pin.add" = "固定";
 "pin.remove" = "取消固定";
 "pin.limit" = "最多可固定 3 个条目。";
+
+/* Settings */
+"settings.version" = "版本";
+"settings.shortcuts" = "快捷键";
+
+/* Shortcut */
+"menu.shortcut" = "快捷键";
+"shortcut.title" = "设置";
+"shortcut.open_panel" = "打开快捷面板";
+"shortcut.record" = "录制";
+"shortcut.stop" = "停止";
+"shortcut.reset" = "重置";
+"shortcut.hint" = "请按组合键（2-4个键）";

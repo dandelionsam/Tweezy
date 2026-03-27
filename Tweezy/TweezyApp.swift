@@ -18,6 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var hotkeyManager: GlobalHotkeyManager?
     var settingsWindow: NSWindow?
     var tagManagerWindow: NSWindow?
+    var shortcutWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -119,6 +120,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         clearItem.target = self
         clearItem.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
         menu.addItem(clearItem)
+
+        let settingsItem = NSMenuItem(
+            title: NSLocalizedString("menu.settings", comment: ""),
+            action: #selector(openShortcutSettings), keyEquivalent: ""
+        )
+        settingsItem.target = self
+        settingsItem.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: nil)
+        menu.addItem(settingsItem)
 
         menu.addItem(.separator())
 
@@ -258,6 +267,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         alert.addButton(withTitle: NSLocalizedString("alert.clear.cancel", comment: ""))
         alert.alertStyle = .warning
         if alert.runModal() == .alertFirstButtonReturn { ClipboardStore.shared.clearAll() }
+    }
+
+    @objc func openShortcutSettings() {
+        openAuxWindow(title: NSLocalizedString("shortcut.title", comment: ""),
+                      size: NSSize(width: 420, height: 340),
+                      window: &shortcutWindow) {
+            ShortcutSettingsView(onSave: { [weak self] in
+                self?.reRegisterHotkey()
+            })
+        }
+    }
+
+    func reRegisterHotkey() {
+        hotkeyManager?.unregister()
+        hotkeyManager?.register()
+        rebuildMenu()
     }
 
     @objc func openTagManager() {
@@ -880,6 +905,183 @@ class HotkeySearchField: NSSearchField {}
 
 extension Notification.Name {
     static let clipboardStoreDidChange = Notification.Name("clipboardStoreDidChange")
+}
+
+// MARK: - ShortcutSettingsView
+
+struct ShortcutSettingsView: View {
+    var onSave: () -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                // App icon + name + version header
+                VStack(spacing: 6) {
+                    Image(nsImage: NSApp.applicationIconImage)
+                        .resizable()
+                        .frame(width: 64, height: 64)
+                    Text("Tweezy")
+                        .font(.system(size: 18, weight: .bold))
+                    Text("\(NSLocalizedString("settings.version", comment: "")) \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0")")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 24)
+
+                // Shortcuts section
+                SettingsSectionCard(title: NSLocalizedString("settings.shortcuts", comment: "")) {
+                    ShortcutCardRow(
+                        label: NSLocalizedString("shortcut.open_panel", comment: ""),
+                        keyCode: GlobalHotkeyManager.savedKeyCode,
+                        modifiers: GlobalHotkeyManager.savedModifiers,
+                        defaultKeyCode: GlobalHotkeyManager.defaultKeyCode,
+                        defaultModifiers: GlobalHotkeyManager.defaultModifiers,
+                        onSave: onSave
+                    )
+                }
+
+                Spacer(minLength: 20)
+            }
+        }
+        .frame(width: 420, height: 340)
+    }
+}
+
+// MARK: - SettingsSectionCard
+
+struct SettingsSectionCard<Content: View>: View {
+    let title: String
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(.primary)
+                .padding(.leading, 4)
+
+            VStack(spacing: 0) {
+                content
+            }
+            .background(Color(nsColor: .quaternaryLabelColor).opacity(0.35))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .padding(.horizontal, 20)
+    }
+}
+
+// MARK: - ShortcutCardRow
+
+struct ShortcutCardRow: View {
+    let label: String
+    let defaultKeyCode: UInt32
+    let defaultModifiers: UInt32
+    var onSave: () -> Void
+
+    @State private var currentKeyCode: UInt32
+    @State private var currentModifiers: UInt32
+    @State private var isRecording = false
+    @State private var eventMonitor: Any?
+
+    init(label: String, keyCode: UInt32, modifiers: UInt32,
+         defaultKeyCode: UInt32, defaultModifiers: UInt32, onSave: @escaping () -> Void) {
+        self.label = label
+        self.defaultKeyCode = defaultKeyCode
+        self.defaultModifiers = defaultModifiers
+        self.onSave = onSave
+        _currentKeyCode = State(initialValue: keyCode)
+        _currentModifiers = State(initialValue: modifiers)
+    }
+
+    private var displayString: String {
+        GlobalHotkeyManager.displayString(keyCode: currentKeyCode, modifiers: currentModifiers)
+    }
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.system(size: 13))
+                if isRecording {
+                    Text(NSLocalizedString("shortcut.hint", comment: ""))
+                        .font(.caption)
+                        .foregroundColor(.accentColor)
+                }
+            }
+
+            Spacer()
+
+            Text(displayString)
+                .font(.system(size: 13, design: .rounded))
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(isRecording
+                              ? Color.accentColor.opacity(0.12)
+                              : Color(nsColor: .separatorColor).opacity(0.3))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(isRecording ? Color.accentColor : Color.clear, lineWidth: 1.5)
+                )
+
+            Button(isRecording
+                   ? NSLocalizedString("shortcut.stop", comment: "")
+                   : NSLocalizedString("shortcut.record", comment: "")) {
+                if isRecording { stopRecording() } else { startRecording() }
+            }
+            .controlSize(.small)
+
+            Button(NSLocalizedString("shortcut.reset", comment: "")) {
+                stopRecording()
+                currentKeyCode = defaultKeyCode
+                currentModifiers = defaultModifiers
+                saveAndNotify()
+            }
+            .controlSize(.small)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .onDisappear { stopRecording() }
+    }
+
+    private func startRecording() {
+        isRecording = true
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
+            let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+            let carbonMods = GlobalHotkeyManager.carbonModifiers(from: flags)
+            guard carbonMods != 0 else { return nil }
+
+            var modCount = 0
+            if flags.contains(.command) { modCount += 1 }
+            if flags.contains(.shift)   { modCount += 1 }
+            if flags.contains(.option)  { modCount += 1 }
+            if flags.contains(.control) { modCount += 1 }
+            guard (modCount + 1) >= 2, (modCount + 1) <= 4 else { return nil }
+
+            currentKeyCode = UInt32(event.keyCode)
+            currentModifiers = carbonMods
+            stopRecording()
+            saveAndNotify()
+            return nil
+        }
+    }
+
+    private func stopRecording() {
+        isRecording = false
+        if let monitor = eventMonitor {
+            NSEvent.removeMonitor(monitor)
+            eventMonitor = nil
+        }
+    }
+
+    private func saveAndNotify() {
+        GlobalHotkeyManager.save(keyCode: currentKeyCode, modifiers: currentModifiers)
+        onSave()
+    }
 }
 
 // MARK: - TagManagerView

@@ -2,6 +2,7 @@
 "menu.count.one" = "1개 복사됨";
 "menu.count.many" = "%d개 복사됨";
 "menu.clear_all" = "전체 삭제";
+"menu.settings" = "설정";
 "menu.quit" = "앱 종료";
 
 /* Alert */
@@ -39,3 +40,16 @@
 "pin.add" = "고정";
 "pin.remove" = "고정 해제";
 "pin.limit" = "최대 3개의 항목을 고정할 수 있습니다.";
+
+/* Settings */
+"settings.version" = "버전";
+"settings.shortcuts" = "단축키";
+
+/* Shortcut */
+"menu.shortcut" = "단축키";
+"shortcut.title" = "설정";
+"shortcut.open_panel" = "빠른 패널 열기";
+"shortcut.record" = "기록";
+"shortcut.stop" = "중지";
+"shortcut.reset" = "초기화";
+"shortcut.hint" = "키 조합을 누르세요 (2-4개 키)";

@@ -2,6 +2,7 @@
 "menu.count.one" = "1 элемент скопирован";
 "menu.count.many" = "%d элементов скопировано";
 "menu.clear_all" = "Очистить всё";
+"menu.settings" = "Настройки";
 "menu.quit" = "Выйти из приложения";
 
 /* Alert */
@@ -39,3 +40,16 @@
 "pin.add" = "Закрепить";
 "pin.remove" = "Открепить";
 "pin.limit" = "Можно закрепить не более 3 элементов.";
+
+/* Settings */
+"settings.version" = "Версия";
+"settings.shortcuts" = "Сочетания клавиш";
+
+/* Shortcut */
+"menu.shortcut" = "Сочетание клавиш";
+"shortcut.title" = "Настройки";
+"shortcut.open_panel" = "Открыть быструю панель";
+"shortcut.record" = "Записать";
+"shortcut.stop" = "Стоп";
+"shortcut.reset" = "Сбросить";
+"shortcut.hint" = "Нажмите сочетание клавиш (2-4 клавиши)";

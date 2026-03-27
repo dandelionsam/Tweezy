@@ -2,6 +2,7 @@
 "menu.count.one" = "1件コピー済み";
 "menu.count.many" = "%d件コピー済み";
 "menu.clear_all" = "すべて消去";
+"menu.settings" = "設定";
 "menu.quit" = "アプリを終了";
 
 /* Alert */
@@ -39,3 +40,16 @@
 "pin.add" = "固定";
 "pin.remove" = "固定解除";
 "pin.limit" = "固定できる項目は最大3つです。";
+
+/* Settings */
+"settings.version" = "バージョン";
+"settings.shortcuts" = "ショートカット";
+
+/* Shortcut */
+"menu.shortcut" = "ショートカット";
+"shortcut.title" = "設定";
+"shortcut.open_panel" = "クイックパネルを開く";
+"shortcut.record" = "記録";
+"shortcut.stop" = "停止";
+"shortcut.reset" = "リセット";
+"shortcut.hint" = "キーの組み合わせを押してください（2〜4キー）";

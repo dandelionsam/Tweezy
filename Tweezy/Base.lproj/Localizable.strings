@@ -2,6 +2,7 @@
 "menu.count.one" = "1 item copied";
 "menu.count.many" = "%d items copied";
 "menu.clear_all" = "Clear All";
+"menu.settings" = "Settings";
 "menu.quit" = "Quit App";
 
 /* Alert */
@@ -39,3 +40,16 @@
 "pin.add" = "Pin";
 "pin.remove" = "Unpin";
 "pin.limit" = "You can pin up to 3 items.";
+
+/* Settings */
+"settings.version" = "Version";
+"settings.shortcuts" = "Shortcuts";
+
+/* Shortcut */
+"menu.shortcut" = "Shortcut";
+"shortcut.title" = "Settings";
+"shortcut.open_panel" = "Open Quick Panel";
+"shortcut.record" = "Record";
+"shortcut.stop" = "Stop";
+"shortcut.reset" = "Reset";
+"shortcut.hint" = "Press a key combination (2-4 keys)";

@@ -2,6 +2,7 @@
 "menu.count.one" = "1 elemento copiato";
 "menu.count.many" = "%d elementi copiati";
 "menu.clear_all" = "Cancella tutto";
+"menu.settings" = "Impostazioni";
 "menu.quit" = "Esci dall'app";
 
 /* Alert */
@@ -39,3 +40,16 @@
 "pin.add" = "Fissa";
 "pin.remove" = "Rimuovi";
 "pin.limit" = "Puoi fissare al massimo 3 elementi.";
+
+/* Settings */
+"settings.version" = "Versione";
+"settings.shortcuts" = "Scorciatoie";
+
+/* Shortcut */
+"menu.shortcut" = "Scorciatoia";
+"shortcut.title" = "Impostazioni";
+"shortcut.open_panel" = "Apri pannello rapido";
+"shortcut.record" = "Registra";
+"shortcut.stop" = "Stop";
+"shortcut.reset" = "Ripristina";
+"shortcut.hint" = "Premi una combinazione di tasti (2-4 tasti)";
