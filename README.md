@@ -4,32 +4,23 @@
 
 A lightweight macOS menu bar app that monitors your clipboard and provides quick-access actions via a global hotkey.
 
-## Requirements
-
-| Tool | Version |
-|------|---------|
-| macOS | 13.0 (Ventura) or later |
-| Xcode | 15.0 or later |
-| Swift | 5.0 or later |
-
-## 💠 Features
-
-- 📋 **Clipboard Monitoring** — Automatically watches for clipboard changes in the background
-- ⌨️ **Global Hotkey** — Trigger the app from anywhere on your system with a configurable shortcut
-- 🖥️ **Menu Bar App** — Runs silently as a background app (`LSUIElement = true`), accessible from the macOS menu bar
-- 🌍 **Localization** — Fully localized in **8 languages**: English, Italian, Chinese (Simplified), Korean, Russian, Spanish, and Japanese
-- 🔒 **Accessibility Integration** — Uses macOS Accessibility APIs to simulate paste actions (`Cmd+V`)
+## ↘️ Installation
+After you have downloaded your preferred version from the release tab, and it does not open with the traditional methods, you can try these commands:
+```
+xattr -dr com.apple.quarantine ~/path/to/download/Tweezy.app
+chmod +x ~/path/to/download/Tweezy.app
+```
 
 ## 🔓 Permissions
 
 Tweezy requires the following macOS permission:
 
 | Permission | Reason |
-|-----------|--------|
+|------------|--------|
 | **Accessibility** | Required to simulate the Paste shortcut (`Cmd+V`) on your behalf |
 
-On first launch, macOS will prompt you to grant Accessibility access. You can manage this at any time in:
-**System Settings → Privacy & Security → Accessibility**
+On first launch, macOS will prompt you to grant Accessibility access. 
+You can manage this at any time in: **System Settings → Privacy & Security → Accessibility**
 
 ## 📦 Dependencies
 
