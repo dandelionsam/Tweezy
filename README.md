@@ -7,8 +7,8 @@ A lightweight macOS menu bar app that monitors your clipboard and provides quick
 ## ↘️ Installation
 After you have downloaded your preferred version from the release tab, and it does not open with the traditional methods, you can try these commands:
 ```
-xattr -dr com.apple.quarantine ~/path/to/download/Tweezy.app
-chmod +x ~/path/to/download/Tweezy.app
+xattr -rd com.apple.quarantine ~/path/to/download/Tweezy.app
+chmod +x ./Tweezy.app/Contents/MacOS/*
 ```
 
 ## 🔓 Permissions
