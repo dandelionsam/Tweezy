@@ -27,13 +27,12 @@ struct ClipboardItem: Identifiable, Codable {
     var content: ClipboardContent
     var copiedAt: Date
     var tagIDs: [UUID]
-    var isPinned: Bool
     var appName: String?
 
     init(id: UUID = UUID(), content: ClipboardContent, copiedAt: Date = Date(),
-         tagIDs: [UUID] = [], isPinned: Bool = false, appName: String? = nil) {
+         tagIDs: [UUID] = [], appName: String? = nil) {
         self.id = id; self.content = content; self.copiedAt = copiedAt
-        self.tagIDs = tagIDs; self.isPinned = isPinned; self.appName = appName
+        self.tagIDs = tagIDs; self.appName = appName
     }
 
     var previewText: String {
@@ -55,6 +54,9 @@ class ClipboardStore: ObservableObject {
     @Published var selectedTagID: UUID? = nil
     @Published var matchCase: Bool = false
     @Published var matchWord: Bool = false
+
+    /// Set by copyToClipboard so ClipboardMonitor ignores the self-triggered change
+    var skipNextClipboardChange = false
 
     private let saveURL: URL = {
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
@@ -87,10 +89,7 @@ class ClipboardStore: ObservableObject {
                 }
             }
         }
-        return result.sorted { a, b in
-            if a.isPinned != b.isPinned { return a.isPinned }
-            return a.copiedAt > b.copiedAt
-        }
+        return result.sorted { $0.copiedAt > $1.copiedAt }
     }
 
     func add(_ item: ClipboardItem) {
@@ -108,13 +107,8 @@ class ClipboardStore: ObservableObject {
 
     func delete(_ item: ClipboardItem) { items.removeAll { $0.id == item.id }; save() }
 
-    func togglePin(_ item: ClipboardItem) {
-        if let idx = items.firstIndex(where: { $0.id == item.id }) {
-            items[idx].isPinned.toggle(); save()
-        }
-    }
-
     func copyToClipboard(_ item: ClipboardItem) {
+        skipNextClipboardChange = true
         let pb = NSPasteboard.general; pb.clearContents()
         switch item.content {
         case .text(let s): pb.setString(s, forType: .string)
@@ -122,14 +116,10 @@ class ClipboardStore: ObservableObject {
         }
     }
 
-    func clearAll() { items.removeAll { !$0.isPinned }; save() }
+    func clearAll() { items.removeAll(); save() }
 
     private func trim() {
-        let unpinned = items.filter { !$0.isPinned }
-        if unpinned.count > 100 {
-            let excess = unpinned.suffix(unpinned.count - 100)
-            items.removeAll { item in excess.contains(where: { $0.id == item.id }) }
-        }
+        if items.count > 100 { items = Array(items.prefix(100)) }
     }
 
     func save() {

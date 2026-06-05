@@ -158,10 +158,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if displayTitle.count > 60 { displayTitle = String(displayTitle.prefix(57)) + "…" }
         if displayTitle.isEmpty { displayTitle = NSLocalizedString("item.empty", comment: "") }
 
-        let prefix = item.isPinned ? "📌 " : ""
         let attrs: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 13)]
-        menuItem.attributedTitle = NSMutableAttributedString(string: prefix + displayTitle, attributes: attrs)
-        menuItem.title = prefix + displayTitle
+        menuItem.attributedTitle = NSMutableAttributedString(string: displayTitle, attributes: attrs)
+        menuItem.title = displayTitle
         menuItem.representedObject = item.id
         menuItem.target = self
         menuItem.action = pasteOnSelect
@@ -319,7 +318,6 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     private let footerLabel = NSTextField(labelWithString: "")
 
     private var items: [ClipboardItem] = []
-    private var pinnedItems: [ClipboardItem] = []
     private var query: String = ""
     private var debounceTimer: Timer?
     private var pendingPasteID: UUID? = nil
@@ -334,13 +332,14 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     override var canBecomeKey: Bool  { true }
     override var canBecomeMain: Bool { true }
 
+    private let baseHeight: CGFloat = 416
+    private let panelWidth: CGFloat = 440
+
     init(screen: NSScreen, onPaste: @escaping (ClipboardItem) -> Void,
          onCopy: @escaping (ClipboardItem) -> Void) {
-        let w: CGFloat = 440
-        let h: CGFloat = 416
         let sf = screen.visibleFrame
-        let origin = NSPoint(x: sf.midX - w/2, y: sf.midY - h/2)
-        super.init(contentRect: NSRect(origin: origin, size: NSSize(width: w, height: h)),
+        let origin = NSPoint(x: sf.midX - panelWidth/2, y: sf.midY - baseHeight/2)
+        super.init(contentRect: NSRect(origin: origin, size: NSSize(width: panelWidth, height: baseHeight)),
                    styleMask: [.borderless], backing: .buffered, defer: false)
         self.onPaste = onPaste; self.onCopy = onCopy
         level = .floating; isOpaque = false; backgroundColor = .clear
@@ -473,18 +472,12 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
         self.query = query
         ClipboardStore.shared.searchText = query
 
-        // Pinned items: always shown, never filtered by search
-        pinnedItems = ClipboardStore.shared.items
-            .filter { $0.isPinned }
-            .sorted { $0.copiedAt > $1.copiedAt }
-
-        // Regular items: not pinned, filtered by search if active
-        let allRegular = ClipboardStore.shared.items.filter { !$0.isPinned }
+        let all = ClipboardStore.shared.items
         if query.isEmpty {
-            items = Array(allRegular.prefix(10))
+            items = Array(all.prefix(10))
         } else {
-            let needle   = ClipboardStore.shared.matchCase ? query : query.lowercased()
-            let filtered = allRegular.filter { item in
+            let needle = ClipboardStore.shared.matchCase ? query : query.lowercased()
+            let filtered = all.filter { item in
                 guard case .text(let s) = item.content else { return false }
                 let haystack = ClipboardStore.shared.matchCase ? s : s.lowercased()
                 return haystack.contains(needle)
@@ -496,85 +489,31 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     }
 
     // MARK: - Row mapping
-    // Layout: [pinned rows] [separator row if pinned > 0] [regular rows]
 
-    private var separatorRow: Int? { pinnedItems.isEmpty ? nil : pinnedItems.count }
-    private var totalRows: Int { pinnedItems.count + (pinnedItems.isEmpty ? 0 : 1) + items.count }
+    private var totalRows: Int { items.count }
 
-    private enum RowContent {
-        case pinned(ClipboardItem)
-        case separator
-        case regular(ClipboardItem, index: Int)
-    }
-
-    private func rowContent(at row: Int) -> RowContent {
-        if row < pinnedItems.count { return .pinned(pinnedItems[row]) }
-        if let sep = separatorRow, row == sep { return .separator }
-        let regularIndex = row - pinnedItems.count - (pinnedItems.isEmpty ? 0 : 1)
-        return .regular(items[regularIndex], index: regularIndex)
-    }
+    private func rowContent(at row: Int) -> ClipboardItem { items[row] }
 
     // MARK: - TableView
 
     func numberOfRows(in tableView: NSTableView) -> Int { totalRows }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        switch rowContent(at: row) {
-        case .pinned(let item):
-            let cellID = NSUserInterfaceItemIdentifier("pinned")
-            let cell = (tableView.makeView(withIdentifier: cellID, owner: self) as? QuickPickCell)
-                ?? QuickPickCell(identifier: cellID)
-            cell.configure(item: item, query: "", matchCase: false, index: -1,
-                           isPinned: true, onPinToggle: { [weak self] in self?.togglePin(item) })
-            return cell
-        case .separator:
-            let cellID = NSUserInterfaceItemIdentifier("sep")
-            if let existing = tableView.makeView(withIdentifier: cellID, owner: self) { return existing }
-            let v = PinnedSeparatorView()
-            v.identifier = cellID
-            return v
-        case .regular(let item, let index):
-            let cellID = NSUserInterfaceItemIdentifier("cell")
-            let cell = (tableView.makeView(withIdentifier: cellID, owner: self) as? QuickPickCell)
-                ?? QuickPickCell(identifier: cellID)
-            cell.configure(item: item, query: query, matchCase: ClipboardStore.shared.matchCase,
-                           index: index, isPinned: false, onPinToggle: { [weak self] in self?.togglePin(item) })
-            return cell
-        }
-    }
-
-    private func togglePin(_ item: ClipboardItem) {
-        let store = ClipboardStore.shared
-        if item.isPinned {
-            store.togglePin(item)
-        } else {
-            if store.items.filter({ $0.isPinned }).count >= 3 {
-                let alert = NSAlert()
-                alert.messageText = NSLocalizedString("pin.limit", comment: "")
-                alert.alertStyle = .informational
-                alert.addButton(withTitle: "OK")
-                alert.runModal()
-                return
-            }
-            store.togglePin(item)
-        }
-        reload(query: query)
+        let cellID = NSUserInterfaceItemIdentifier("cell")
+        let cell = (tableView.makeView(withIdentifier: cellID, owner: self) as? QuickPickCell)
+            ?? QuickPickCell(identifier: cellID)
+        cell.configure(item: rowContent(at: row), query: query,
+                       matchCase: ClipboardStore.shared.matchCase, index: row)
+        return cell
     }
 
     func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
-        if case .separator = rowContent(at: row) { return NSTableRowView() }
-        return QuickPickRowView()
+        QuickPickRowView()
     }
 
-    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        if case .separator = rowContent(at: row) { return 22 }
-        return 30
-    }
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat { 30 }
 
-    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
-        if case .separator = rowContent(at: row) { return false }
-        return true
-    }
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool { true }
 
     // MARK: - Search delegate
 
@@ -602,7 +541,7 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
         }
         if selector == #selector(NSResponder.insertNewline(_:)) { handleReturn(); return true }
         if selector == #selector(NSResponder.insertTab(_:)) {
-            if !items.isEmpty { tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false) }
+            if totalRows > 0 { tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false) }
             makeFirstResponder(tableView); return true
         }
         if selector == #selector(NSResponder.moveUp(_:)) { moveSelection(by: -1); return true }
@@ -612,22 +551,15 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
 
     private func moveSelection(by delta: Int) {
         let count = totalRows; guard count > 0 else { return }
-        var next = max(0, min(count-1, tableView.selectedRow + delta))
-        // Skip separator row
-        if case .separator = rowContent(at: next) { next = max(0, min(count-1, next + delta)) }
+        let next = max(0, min(count-1, tableView.selectedRow + delta))
         tableView.selectRowIndexes(IndexSet(integer: next), byExtendingSelection: false)
         tableView.scrollRowToVisible(next); pendingPasteID = nil
     }
 
     private func handleReturn() {
-        let row = tableView.selectedRow >= 0 ? tableView.selectedRow : (pinnedItems.isEmpty ? 0 : pinnedItems.count + 1)
+        let row = tableView.selectedRow >= 0 ? tableView.selectedRow : 0
         guard row < totalRows else { return }
-        switch rowContent(at: row) {
-        case .pinned(let item), .regular(let item, _):
-            closePanel(); onPaste?(item)
-        case .separator:
-            break
-        }
+        closePanel(); onPaste?(rowContent(at: row))
     }
 
     private func flashRow(_ row: Int) {
@@ -703,22 +635,12 @@ class KeyPassTableView: NSTableView {
 // MARK: - QuickPickCell
 
 class QuickPickCell: NSTableCellView {
-    private let pinButton = NSButton()
     private let numLabel  = NSTextField(labelWithString: "")
     private let iconView  = NSImageView()
     private let textLabel = NSTextField(labelWithString: "")
-    private var onPinToggle: (() -> Void)?
 
     init(identifier: NSUserInterfaceItemIdentifier) {
         super.init(frame: .zero); self.identifier = identifier
-
-        pinButton.translatesAutoresizingMaskIntoConstraints = false
-        pinButton.isBordered = false
-        pinButton.bezelStyle = .regularSquare
-        pinButton.imageScaling = .scaleProportionallyDown
-        pinButton.target = self
-        pinButton.action = #selector(pinTapped)
-        addSubview(pinButton)
 
         numLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .regular)
         numLabel.textColor = .tertiaryLabelColor
@@ -736,12 +658,7 @@ class QuickPickCell: NSTableCellView {
         addSubview(textLabel)
 
         NSLayoutConstraint.activate([
-            pinButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6),
-            pinButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            pinButton.widthAnchor.constraint(equalToConstant: 14),
-            pinButton.heightAnchor.constraint(equalToConstant: 14),
-
-            numLabel.leadingAnchor.constraint(equalTo: pinButton.trailingAnchor, constant: 4),
+            numLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
             numLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             numLabel.widthAnchor.constraint(equalToConstant: 16),
 
@@ -751,27 +668,14 @@ class QuickPickCell: NSTableCellView {
             iconView.heightAnchor.constraint(equalToConstant: 14),
 
             textLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 6),
-            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
             textLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
     required init?(coder: NSCoder) { fatalError() }
 
-    @objc private func pinTapped() { onPinToggle?() }
-
-    func configure(item: ClipboardItem, query: String, matchCase: Bool, index: Int,
-                   isPinned: Bool, onPinToggle: @escaping () -> Void) {
-        self.onPinToggle = onPinToggle
-
-        // Pin button icon — filled when pinned, outline when not
-        let pinIconName = isPinned ? "pin.fill" : "pin"
-        let pinImg = NSImage(systemSymbolName: pinIconName, accessibilityDescription: nil)
-        pinButton.image = pinImg
-        pinButton.contentTintColor = isPinned ? .controlAccentColor : .tertiaryLabelColor
-
-        // Shortcut number (only for non-pinned regular items)
-        numLabel.stringValue = (!isPinned && index >= 0)
-            ? (index < 9 ? "\(index+1)" : (index == 9 ? "0" : "")) : ""
+    func configure(item: ClipboardItem, query: String, matchCase: Bool, index: Int) {
+        numLabel.stringValue = index < 9 ? "\(index+1)" : (index == 9 ? "0" : "")
 
         let rawText: String
         switch item.content { case .text(let s): rawText = s; case .image: rawText = "" }
@@ -801,8 +705,7 @@ class QuickPickCell: NSTableCellView {
             img?.size = NSSize(width: 13, height: 13); iconView.image = img
         }
 
-        // Search highlight only for non-pinned items when searching
-        if !query.isEmpty && !isPassword && !isPinned {
+        if !query.isEmpty && !isPassword {
             textLabel.attributedStringValue = highlightedString(display, query: query, matchCase: matchCase)
         } else {
             textLabel.stringValue = display; textLabel.textColor = .labelColor
@@ -826,33 +729,6 @@ class QuickPickCell: NSTableCellView {
         }
         return result
     }
-}
-
-// MARK: - PinnedSeparatorView
-
-class PinnedSeparatorView: NSTableCellView {
-    private let titleLabel = NSTextField(labelWithString: "")
-    private let line = NSBox()
-
-    init() {
-        super.init(frame: .zero)
-        titleLabel.stringValue = NSLocalizedString("section.pinned", comment: "")
-        titleLabel.font = NSFont.systemFont(ofSize: 10, weight: .semibold)
-        titleLabel.textColor = .tertiaryLabelColor
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        line.boxType = .separator
-        line.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(titleLabel); addSubview(line)
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            line.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 6),
-            line.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            line.centerYAnchor.constraint(equalTo: centerYAnchor),
-            line.heightAnchor.constraint(equalToConstant: 1),
-        ])
-    }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
 // MARK: - QuickPickRowView
