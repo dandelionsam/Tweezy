@@ -7,7 +7,7 @@
 
 /* Alert */
 "alert.clear.title" = "Cancella tutto lo storico?";
-"alert.clear.message" = "Gli elementi con pin verranno mantenuti.";
+"alert.clear.message" = "Verrà rimosso tutto lo storico degli appunti.";
 "alert.clear.confirm" = "Cancella";
 "alert.clear.cancel" = "Annulla";
 
@@ -30,20 +30,16 @@
 "login.prompt.message" = "Puoi modificare questa impostazione in qualsiasi momento da Impostazioni di Sistema → Generali → Elementi di login.";
 "login.prompt.enable" = "Sì, avvia al login";
 "login.prompt.skip" = "Non ora";
-"section.pinned" = "Fissati";
-"pin.add" = "Fissa";
-"pin.remove" = "Rimuovi";
-"pin.limit" = "Puoi fissare al massimo 3 elementi.";
-
-/* Pinned section */
-"section.pinned" = "Fissati";
-"pin.add" = "Fissa";
-"pin.remove" = "Rimuovi";
-"pin.limit" = "Puoi fissare al massimo 3 elementi.";
 
 /* Settings */
 "settings.version" = "Versione";
 "settings.shortcuts" = "Scorciatoie";
+"settings.sensitive" = "Dati sensibili";
+"settings.sensitive.pattern" = "Pattern di rilevamento (regex)";
+"settings.sensitive.invalid" = "Regex non valida";
+"settings.sensitive.reset" = "Ripristina predefinito";
+"settings.sensitive.show" = "Mostra dati sensibili";
+"settings.sensitive.show.hint" = "Visualizza senza mascheramento nel pannello";
 
 /* Shortcut */
 "menu.shortcut" = "Scorciatoia";

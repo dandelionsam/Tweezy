@@ -141,3 +141,33 @@ class ClipboardStore: ObservableObject {
         }
     }
 }
+
+// MARK: - SensitiveDataSettings
+
+class SensitiveDataSettings: ObservableObject {
+    static let shared = SensitiveDataSettings()
+
+    static let defaultPattern = #"^(?!https?://)(?![/~])(?!.*://)(?=.*[A-Za-z])(?=.*[^A-Za-z\s])[^\s]{8,128}$"#
+
+    @Published var pattern: String {
+        didSet { UserDefaults.standard.set(pattern, forKey: "sensitivePattern") }
+    }
+    @Published var showSensitiveData: Bool {
+        didSet { UserDefaults.standard.set(showSensitiveData, forKey: "showSensitiveData") }
+    }
+
+    private init() {
+        pattern = UserDefaults.standard.string(forKey: "sensitivePattern") ?? Self.defaultPattern
+        showSensitiveData = UserDefaults.standard.bool(forKey: "showSensitiveData")
+    }
+
+    private var compiledRegex: NSRegularExpression? {
+        try? NSRegularExpression(pattern: pattern)
+    }
+
+    func isSensitive(_ text: String) -> Bool {
+        let t = text.trimmingCharacters(in: .whitespaces)
+        guard !t.isEmpty, !pattern.isEmpty, let regex = compiledRegex else { return false }
+        return regex.firstMatch(in: t, range: NSRange(t.startIndex..., in: t)) != nil
+    }
+}

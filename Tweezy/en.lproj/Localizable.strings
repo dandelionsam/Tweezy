@@ -7,7 +7,7 @@
 
 /* Alert */
 "alert.clear.title" = "Clear entire history?";
-"alert.clear.message" = "Pinned items will be kept.";
+"alert.clear.message" = "This will remove all clipboard history.";
 "alert.clear.confirm" = "Clear";
 "alert.clear.cancel" = "Cancel";
 
@@ -30,20 +30,16 @@
 "login.prompt.message" = "You can change this at any time in System Settings → General → Login Items.";
 "login.prompt.enable" = "Yes, launch at login";
 "login.prompt.skip" = "Not now";
-"section.pinned" = "Pinned";
-"pin.add" = "Pin";
-"pin.remove" = "Unpin";
-"pin.limit" = "You can pin up to 3 items.";
-
-/* Pinned section */
-"section.pinned" = "Pinned";
-"pin.add" = "Pin";
-"pin.remove" = "Unpin";
-"pin.limit" = "You can pin up to 3 items.";
 
 /* Settings */
 "settings.version" = "Version";
 "settings.shortcuts" = "Shortcuts";
+"settings.sensitive" = "Sensitive Data";
+"settings.sensitive.pattern" = "Detection pattern (regex)";
+"settings.sensitive.invalid" = "Invalid regex";
+"settings.sensitive.reset" = "Reset to default";
+"settings.sensitive.show" = "Show sensitive data";
+"settings.sensitive.show.hint" = "Display unmasked in the clipboard panel";
 
 /* Shortcut */
 "menu.shortcut" = "Shortcut";

@@ -151,9 +151,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             .replacingOccurrences(of: "\t", with: " ")
 
         let isHexColor = Self.isHexColor(rawTitle)
-        let isPassword = !isHexColor && Self.looksLikePassword(rawTitle)
+        let isPassword = !isHexColor && SensitiveDataSettings.shared.isSensitive(rawTitle)
+        let shouldMask = isPassword && !SensitiveDataSettings.shared.showSensitiveData
 
-        var displayTitle = isPassword
+        var displayTitle = shouldMask
             ? String(repeating: "•", count: min(rawTitle.count, 16)) : rawTitle
         if displayTitle.count > 60 { displayTitle = String(displayTitle.prefix(57)) + "…" }
         if displayTitle.isEmpty { displayTitle = NSLocalizedString("item.empty", comment: "") }
@@ -189,21 +190,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     static func isHexColor(_ s: String) -> Bool {
         let pattern = #"^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$"#
         return s.range(of: pattern, options: .regularExpression) != nil
-    }
-
-    static func looksLikePassword(_ s: String) -> Bool {
-        let t = s.trimmingCharacters(in: .whitespaces)
-        guard t.count >= 8, t.count <= 128, !t.contains(" "),
-              !t.lowercased().hasPrefix("http") else { return false }
-        let hasLetter = t.contains(where: { $0.isLetter })
-        let hasNonAlpha = t.contains(where: { !$0.isLetter })
-        guard hasLetter && hasNonAlpha else { return false }
-        if t.hasPrefix("/") || t.hasPrefix("~") || t.contains("://") { return false }
-        let cats = [t.contains(where: { $0.isUppercase }),
-                    t.contains(where: { $0.isLowercase }),
-                    t.contains(where: { $0.isNumber }),
-                    t.contains(where: { !$0.isLetter && !$0.isNumber })].filter { $0 }.count
-        return cats >= 3
     }
 
     static func colorDotImage(color: NSColor, size: CGFloat) -> NSImage {
@@ -270,7 +256,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func openShortcutSettings() {
         openAuxWindow(title: NSLocalizedString("shortcut.title", comment: ""),
-                      size: NSSize(width: 420, height: 340),
+                      size: NSSize(width: 420, height: 500),
                       window: &shortcutWindow) {
             ShortcutSettingsView(onSave: { [weak self] in
                 self?.reRegisterHotkey()
@@ -304,7 +290,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate {
     static func isHexColorStatic(_ s: String) -> Bool { isHexColor(s) }
-    static func looksLikePasswordStatic(_ s: String) -> Bool { looksLikePassword(s) }
     static func colorDotImageStatic(color: NSColor, size: CGFloat) -> NSImage { colorDotImage(color: color, size: size) }
 }
 
@@ -681,9 +666,10 @@ class QuickPickCell: NSTableCellView {
         switch item.content { case .text(let s): rawText = s; case .image: rawText = "" }
         let trimmed = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
         let isHexColor = AppDelegate.isHexColorStatic(trimmed)
-        let isPassword = !isHexColor && AppDelegate.looksLikePasswordStatic(trimmed)
+        let isPassword = !isHexColor && SensitiveDataSettings.shared.isSensitive(trimmed)
+        let shouldMask = isPassword && !SensitiveDataSettings.shared.showSensitiveData
 
-        var display = isPassword
+        var display = shouldMask
             ? String(repeating: "•", count: min(rawText.count, 20))
             : rawText.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\n", with: " ")
         if display.count > 55 { display = String(display.prefix(52)) + "…" }
@@ -705,7 +691,7 @@ class QuickPickCell: NSTableCellView {
             img?.size = NSSize(width: 13, height: 13); iconView.image = img
         }
 
-        if !query.isEmpty && !isPassword {
+        if !query.isEmpty && !shouldMask {
             textLabel.attributedStringValue = highlightedString(display, query: query, matchCase: matchCase)
         } else {
             textLabel.stringValue = display; textLabel.textColor = .labelColor
@@ -818,9 +804,80 @@ struct ShortcutSettingsView: View {
                 }
 
                 Spacer(minLength: 20)
+
+                // Sensitive data section
+                SettingsSectionCard(title: NSLocalizedString("settings.sensitive", comment: "")) {
+                    SensitiveSettingsSection()
+                }
+
+                Spacer(minLength: 20)
             }
         }
-        .frame(width: 420, height: 340)
+        .frame(width: 420, height: 500)
+    }
+}
+
+// MARK: - SensitiveSettingsSection
+
+struct SensitiveSettingsSection: View {
+    @ObservedObject private var settings = SensitiveDataSettings.shared
+    @State private var draftPattern = SensitiveDataSettings.shared.pattern
+
+    private var isPatternValid: Bool {
+        (try? NSRegularExpression(pattern: draftPattern)) != nil
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(NSLocalizedString("settings.sensitive.pattern", comment: ""))
+                        .font(.system(size: 13))
+                    Spacer()
+                    if !draftPattern.isEmpty && !isPatternValid {
+                        Label(NSLocalizedString("settings.sensitive.invalid", comment: ""),
+                              systemImage: "exclamationmark.triangle.fill")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
+                }
+                TextField("", text: $draftPattern)
+                    .font(.system(size: 11, design: .monospaced))
+                    .textFieldStyle(.roundedBorder)
+                    .onChange(of: draftPattern) { newValue in
+                        if (try? NSRegularExpression(pattern: newValue)) != nil {
+                            settings.pattern = newValue
+                        }
+                    }
+                HStack {
+                    Spacer()
+                    Button(NSLocalizedString("settings.sensitive.reset", comment: "")) {
+                        draftPattern = SensitiveDataSettings.defaultPattern
+                        settings.pattern = SensitiveDataSettings.defaultPattern
+                    }
+                    .controlSize(.small)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+
+            Divider()
+
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(NSLocalizedString("settings.sensitive.show", comment: ""))
+                        .font(.system(size: 13))
+                    Text(NSLocalizedString("settings.sensitive.show.hint", comment: ""))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+                Toggle("", isOn: $settings.showSensitiveData)
+                    .labelsHidden()
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+        }
     }
 }
 
