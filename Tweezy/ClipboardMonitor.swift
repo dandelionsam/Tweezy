@@ -21,6 +21,9 @@ class ClipboardMonitor {
         let pb = NSPasteboard.general
         guard pb.changeCount != lastChangeCount else { return }
         lastChangeCount = pb.changeCount
+        if ClipboardStore.shared.skipNextClipboardChange {
+            ClipboardStore.shared.skipNextClipboardChange = false; return
+        }
         let frontApp = NSWorkspace.shared.frontmostApplication?.localizedName
         if let string = pb.string(forType: .string), !string.isEmpty {
             let item = ClipboardItem(content: .text(string), appName: frontApp)
