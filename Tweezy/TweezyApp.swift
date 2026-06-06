@@ -7,7 +7,10 @@ import ServiceManagement
 @main
 struct TweezyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    var body: some Scene { Settings { EmptyView() } }
+    var body: some Scene {
+        Settings { EmptyView() }
+            .commands { CommandGroup(replacing: .appSettings) {} }
+    }
 }
 
 // MARK: - AppDelegate
@@ -118,7 +121,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             action: #selector(clearAll), keyEquivalent: ""
         )
         clearItem.target = self
-        clearItem.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
+        clearItem.image = NSImage(systemSymbolName: "nosign", accessibilityDescription: nil)
         menu.addItem(clearItem)
 
         let settingsItem = NSMenuItem(
@@ -320,6 +323,7 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     private var keyMonitor: Any?
     private var flagsMonitor: Any?
     private var isCmdDown: Bool = false
+    private let trashBtn = NSButton()
 
     var onPaste: ((ClipboardItem) -> Void)?
     var onCopy:  ((ClipboardItem) -> Void)?
@@ -371,14 +375,13 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
         searchField.font = NSFont.systemFont(ofSize: 14); searchField.delegate = self
         container.addSubview(searchField)
 
-        let trashBtn = NSButton()
         trashBtn.translatesAutoresizingMaskIntoConstraints = false
-        trashBtn.image = NSImage(systemSymbolName: "trash",
+        trashBtn.image = NSImage(systemSymbolName: "xmark.bin",
                                  accessibilityDescription: NSLocalizedString("accessibility.trash", comment: ""))
         trashBtn.bezelStyle = .regularSquare; trashBtn.isBordered = false
         trashBtn.contentTintColor = .secondaryLabelColor
         trashBtn.toolTip = NSLocalizedString("panel.trash.tooltip", comment: "")
-        trashBtn.target = self; trashBtn.action = #selector(clearAllFromPanel)
+        trashBtn.target = self; trashBtn.action = #selector(deleteLast10FromPanel)
         container.addSubview(trashBtn)
 
         let sep = NSBox()
@@ -478,6 +481,7 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
 
     private func reload(query: String) {
         self.query = query
+        setTrashVisible(query.isEmpty)
         ClipboardStore.shared.searchText = query
 
         let all = ClipboardStore.shared.items
@@ -607,6 +611,10 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
         if event.type == .keyDown {
             let mods = event.modifierFlags.intersection([.command, .option, .control, .shift])
             if mods == .command {
+                // CMD+D → delete last 10 recent items (only outside search mode)
+                if event.keyCode == 2, query.isEmpty {
+                    deleteLast10FromPanel(); return
+                }
                 // CMD+Return → open URL if selected item is a URL
                 if event.keyCode == 36 {
                     let row = tableView.selectedRow >= 0 ? tableView.selectedRow : 0
@@ -665,16 +673,29 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
         let item = items[digit]; closePanel(); onPaste?(item)
     }
 
-    @objc private func clearAllFromPanel() {
-        let alert = NSAlert()
-        alert.messageText = NSLocalizedString("alert.clear.title", comment: "")
-        alert.informativeText = NSLocalizedString("alert.clear.message", comment: "")
-        alert.addButton(withTitle: NSLocalizedString("alert.clear.confirm", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("alert.clear.cancel", comment: ""))
-        alert.alertStyle = .warning
-        if alert.runModal() == .alertFirstButtonReturn {
-            ClipboardStore.shared.clearAll(); reload(query: query)
+    private func setTrashVisible(_ visible: Bool) {
+        if visible {
+            trashBtn.isHidden = false
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = 0.18
+                trashBtn.animator().alphaValue = 1
+            }
+        } else {
+            NSAnimationContext.runAnimationGroup({ ctx in
+                ctx.duration = 0.18
+                trashBtn.animator().alphaValue = 0
+            }, completionHandler: { [weak self] in
+                guard let self, self.trashBtn.alphaValue == 0 else { return }
+                self.trashBtn.isHidden = true
+            })
         }
+    }
+
+    @objc private func deleteLast10FromPanel() {
+        for item in items {
+            ClipboardStore.shared.delete(item)
+        }
+        reload(query: query)
     }
 }
 

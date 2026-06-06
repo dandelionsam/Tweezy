@@ -13,14 +13,14 @@
 
 /* Panel */
 "panel.search.placeholder" = "Search clipboard…";
-"panel.trash.tooltip" = "Clear entire history";
+"panel.trash.tooltip" = "Delete last 10 items (⌘D)";
 "panel.footer" = "1-9, 0 to paste  •  ↑↓ to navigate  •  ↵ to paste  •  ⎋ to close";
 "panel.empty" = "No items";
 "panel.no_results" = "No results";
 
 /* Accessibility */
 "accessibility.clipboard_manager" = "Tweezy";
-"accessibility.trash" = "Clear All";
+"accessibility.trash" = "Delete last 10 items";
 
 /* Item */
 "item.empty" = "(empty)";

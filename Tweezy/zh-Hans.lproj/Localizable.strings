@@ -13,14 +13,14 @@
 
 /* Panel */
 "panel.search.placeholder" = "搜索剪贴板…";
-"panel.trash.tooltip" = "清除全部历史记录";
+"panel.trash.tooltip" = "删除最近 10 条 (⌘D)";
 "panel.footer" = "1-9、0 粘贴  •  ↑↓ 导航  •  ↵ 粘贴  •  ⎋ 关闭";
 "panel.empty" = "暂无内容";
 "panel.no_results" = "无匹配结果";
 
 /* Accessibility */
 "accessibility.clipboard_manager" = "Tweezy";
-"accessibility.trash" = "清除全部";
+"accessibility.trash" = "删除最近 10 条";
 
 /* Item */
 "item.empty" = "（空）";

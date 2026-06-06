@@ -13,14 +13,14 @@
 
 /* Panel */
 "panel.search.placeholder" = "Buscar en el portapapeles…";
-"panel.trash.tooltip" = "Borrar todo el historial";
+"panel.trash.tooltip" = "Eliminar los últimos 10 elementos (⌘D)";
 "panel.footer" = "1-9, 0 pegar  •  ↑↓ navegar  •  ↵ pegar  •  ⎋ cerrar";
 "panel.empty" = "Sin elementos";
 "panel.no_results" = "Sin resultados";
 
 /* Accessibility */
 "accessibility.clipboard_manager" = "Tweezy";
-"accessibility.trash" = "Borrar todo";
+"accessibility.trash" = "Eliminar últimos 10";
 
 /* Item */
 "item.empty" = "(vacío)";

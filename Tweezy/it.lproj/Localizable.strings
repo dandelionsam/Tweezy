@@ -13,14 +13,14 @@
 
 /* Panel */
 "panel.search.placeholder" = "Cerca negli appunti…";
-"panel.trash.tooltip" = "Cancella tutto lo storico";
+"panel.trash.tooltip" = "Elimina gli ultimi 10 elementi (⌘D)";
 "panel.footer" = "1-9, 0 per incollare  •  ↑↓ per navigare  •  ↵ per incollare  •  ⎋ per chiudere";
 "panel.empty" = "Nessun elemento";
 "panel.no_results" = "Nessun risultato";
 
 /* Accessibility */
 "accessibility.clipboard_manager" = "Tweezy";
-"accessibility.trash" = "Cancella tutto";
+"accessibility.trash" = "Elimina gli ultimi 10 elementi";
 
 /* Item */
 "item.empty" = "(vuoto)";

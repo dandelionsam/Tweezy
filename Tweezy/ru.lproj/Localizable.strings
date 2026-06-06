@@ -13,14 +13,14 @@
 
 /* Panel */
 "panel.search.placeholder" = "Поиск в буфере обмена…";
-"panel.trash.tooltip" = "Очистить всю историю";
+"panel.trash.tooltip" = "Удалить последние 10 элементов (⌘D)";
 "panel.footer" = "1-9, 0 — вставить  •  ↑↓ — навигация  •  ↵ — вставить  •  ⎋ — закрыть";
 "panel.empty" = "Нет элементов";
 "panel.no_results" = "Ничего не найдено";
 
 /* Accessibility */
 "accessibility.clipboard_manager" = "Tweezy";
-"accessibility.trash" = "Очистить всё";
+"accessibility.trash" = "Удалить последние 10";
 
 /* Item */
 "item.empty" = "(пусто)";
