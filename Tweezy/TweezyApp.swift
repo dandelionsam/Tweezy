@@ -417,7 +417,10 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
                                  accessibilityDescription: NSLocalizedString("accessibility.trash", comment: ""))
         trashBtn.bezelStyle = .regularSquare; trashBtn.isBordered = false
         trashBtn.contentTintColor = .secondaryLabelColor
-        trashBtn.toolTip = NSLocalizedString("panel.trash.tooltip", comment: "")
+        let delShortcut = GlobalHotkeyManager.displayString(
+            keyCode: DeleteShortcutManager.savedKeyCode,
+            modifiers: DeleteShortcutManager.savedModifiers)
+        trashBtn.toolTip = NSLocalizedString("panel.trash.tooltip", comment: "") + " (\(delShortcut))"
         trashBtn.target = self; trashBtn.action = #selector(deleteLast10FromPanel)
         container.addSubview(trashBtn)
 
@@ -647,11 +650,14 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     override func sendEvent(_ event: NSEvent) {
         if event.type == .keyDown {
             let mods = event.modifierFlags.intersection([.command, .option, .control, .shift])
+            // Delete shortcut (customizable) — only outside search mode
+            let delKeyCode = UInt16(DeleteShortcutManager.savedKeyCode)
+            let delMods = GlobalHotkeyManager.nsModifiers(from: DeleteShortcutManager.savedModifiers)
+            if event.keyCode == delKeyCode, mods == delMods, query.isEmpty {
+                deleteLast10FromPanel(); return
+            }
+
             if mods == .command {
-                // CMD+D → delete last 10 recent items (only outside search mode)
-                if event.keyCode == 2, query.isEmpty {
-                    deleteLast10FromPanel(); return
-                }
                 // CMD+Return → open URL if selected item is a URL
                 if event.keyCode == 36 {
                     let row = tableView.selectedRow >= 0 ? tableView.selectedRow : 0
@@ -977,6 +983,16 @@ struct ShortcutSettingsView: View {
                         defaultModifiers: GlobalHotkeyManager.defaultModifiers,
                         onSave: onSave
                     )
+                    Divider()
+                    ShortcutCardRow(
+                        label: NSLocalizedString("shortcut.delete_last10", comment: ""),
+                        keyCode: DeleteShortcutManager.savedKeyCode,
+                        modifiers: DeleteShortcutManager.savedModifiers,
+                        defaultKeyCode: DeleteShortcutManager.defaultKeyCode,
+                        defaultModifiers: DeleteShortcutManager.defaultModifiers,
+                        saveHandler: DeleteShortcutManager.save,
+                        onSave: {}
+                    )
                 }
 
                 Spacer(minLength: 20)
@@ -1134,6 +1150,7 @@ struct ShortcutCardRow: View {
     let label: String
     let defaultKeyCode: UInt32
     let defaultModifiers: UInt32
+    let saveHandler: (UInt32, UInt32) -> Void
     var onSave: () -> Void
 
     @State private var currentKeyCode: UInt32
@@ -1142,10 +1159,13 @@ struct ShortcutCardRow: View {
     @State private var eventMonitor: Any?
 
     init(label: String, keyCode: UInt32, modifiers: UInt32,
-         defaultKeyCode: UInt32, defaultModifiers: UInt32, onSave: @escaping () -> Void) {
+         defaultKeyCode: UInt32, defaultModifiers: UInt32,
+         saveHandler: @escaping (UInt32, UInt32) -> Void = GlobalHotkeyManager.save,
+         onSave: @escaping () -> Void) {
         self.label = label
         self.defaultKeyCode = defaultKeyCode
         self.defaultModifiers = defaultModifiers
+        self.saveHandler = saveHandler
         self.onSave = onSave
         _currentKeyCode = State(initialValue: keyCode)
         _currentModifiers = State(initialValue: modifiers)
@@ -1236,7 +1256,7 @@ struct ShortcutCardRow: View {
     }
 
     private func saveAndNotify() {
-        GlobalHotkeyManager.save(keyCode: currentKeyCode, modifiers: currentModifiers)
+        saveHandler(currentKeyCode, currentModifiers)
         onSave()
     }
 }

@@ -13,7 +13,7 @@
 
 /* Panel */
 "panel.search.placeholder" = "Search clipboard…";
-"panel.trash.tooltip" = "Delete last 10 items (⌘D)";
+"panel.trash.tooltip" = "Delete last 10 items";
 "panel.footer" = "1-9, 0 to paste  •  ↑↓ to navigate  •  ↵ to paste  •  ⎋ to close";
 "panel.empty" = "No items";
 "panel.no_results" = "No results";
@@ -55,6 +55,7 @@
 "menu.shortcut" = "Shortcut";
 "shortcut.title" = "Settings";
 "shortcut.open_panel" = "Open Quick Panel";
+"shortcut.delete_last10" = "Delete Last 10 Items";
 "shortcut.record" = "Record";
 "shortcut.stop" = "Stop";
 "shortcut.reset" = "Reset";

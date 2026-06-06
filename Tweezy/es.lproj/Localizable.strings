@@ -13,7 +13,7 @@
 
 /* Panel */
 "panel.search.placeholder" = "Buscar en el portapapeles…";
-"panel.trash.tooltip" = "Eliminar los últimos 10 elementos (⌘D)";
+"panel.trash.tooltip" = "Eliminar los últimos 10 elementos";
 "panel.footer" = "1-9, 0 pegar  •  ↑↓ navegar  •  ↵ pegar  •  ⎋ cerrar";
 "panel.empty" = "Sin elementos";
 "panel.no_results" = "Sin resultados";
@@ -55,6 +55,7 @@
 "menu.shortcut" = "Atajo";
 "shortcut.title" = "Ajustes";
 "shortcut.open_panel" = "Abrir panel rápido";
+"shortcut.delete_last10" = "Eliminar los últimos 10 elementos";
 "shortcut.record" = "Grabar";
 "shortcut.stop" = "Parar";
 "shortcut.reset" = "Restablecer";

@@ -139,4 +139,39 @@ class GlobalHotkeyManager {
         if flags.contains(.control) { mods |= UInt32(controlKey) }
         return mods
     }
+
+    /// Convert Carbon modifier mask to NSEvent modifier flags
+    static func nsModifiers(from carbonMods: UInt32) -> NSEvent.ModifierFlags {
+        var flags: NSEvent.ModifierFlags = []
+        if carbonMods & UInt32(cmdKey)     != 0 { flags.insert(.command) }
+        if carbonMods & UInt32(shiftKey)   != 0 { flags.insert(.shift) }
+        if carbonMods & UInt32(optionKey)  != 0 { flags.insert(.option) }
+        if carbonMods & UInt32(controlKey) != 0 { flags.insert(.control) }
+        return flags
+    }
+}
+
+// MARK: - DeleteShortcutManager
+
+enum DeleteShortcutManager {
+    static let defaultKeyCode: UInt32   = UInt32(kVK_Delete)
+    static let defaultModifiers: UInt32 = UInt32(cmdKey)
+
+    private static let udKeyCode   = "deleteShortcutKeyCode"
+    private static let udModifiers = "deleteShortcutModifiers"
+
+    static var savedKeyCode: UInt32 {
+        let v = UserDefaults.standard.integer(forKey: udKeyCode)
+        return v == 0 ? defaultKeyCode : UInt32(v)
+    }
+
+    static var savedModifiers: UInt32 {
+        guard UserDefaults.standard.object(forKey: udModifiers) != nil else { return defaultModifiers }
+        return UInt32(UserDefaults.standard.integer(forKey: udModifiers))
+    }
+
+    static func save(keyCode: UInt32, modifiers: UInt32) {
+        UserDefaults.standard.set(Int(keyCode), forKey: udKeyCode)
+        UserDefaults.standard.set(Int(modifiers), forKey: udModifiers)
+    }
 }

@@ -13,7 +13,7 @@
 
 /* Panel */
 "panel.search.placeholder" = "Cerca negli appunti…";
-"panel.trash.tooltip" = "Elimina gli ultimi 10 elementi (⌘D)";
+"panel.trash.tooltip" = "Elimina gli ultimi 10 elementi";
 "panel.footer" = "1-9, 0 per incollare  •  ↑↓ per navigare  •  ↵ per incollare  •  ⎋ per chiudere";
 "panel.empty" = "Nessun elemento";
 "panel.no_results" = "Nessun risultato";
@@ -51,6 +51,7 @@
 "menu.shortcut" = "Scorciatoia";
 "shortcut.title" = "Impostazioni";
 "shortcut.open_panel" = "Apri pannello rapido";
+"shortcut.delete_last10" = "Elimina gli ultimi 10 elementi";
 "shortcut.record" = "Registra";
 "shortcut.stop" = "Stop";
 "shortcut.reset" = "Ripristina";

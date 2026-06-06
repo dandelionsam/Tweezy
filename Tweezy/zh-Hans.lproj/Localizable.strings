@@ -13,7 +13,7 @@
 
 /* Panel */
 "panel.search.placeholder" = "搜索剪贴板…";
-"panel.trash.tooltip" = "删除最近 10 条 (⌘D)";
+"panel.trash.tooltip" = "删除最近 10 条";
 "panel.footer" = "1-9、0 粘贴  •  ↑↓ 导航  •  ↵ 粘贴  •  ⎋ 关闭";
 "panel.empty" = "暂无内容";
 "panel.no_results" = "无匹配结果";
@@ -55,6 +55,7 @@
 "menu.shortcut" = "快捷键";
 "shortcut.title" = "设置";
 "shortcut.open_panel" = "打开快捷面板";
+"shortcut.delete_last10" = "删除最近 10 条";
 "shortcut.record" = "录制";
 "shortcut.stop" = "停止";
 "shortcut.reset" = "重置";

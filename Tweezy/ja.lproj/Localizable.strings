@@ -13,7 +13,7 @@
 
 /* Panel */
 "panel.search.placeholder" = "クリップボードを検索…";
-"panel.trash.tooltip" = "最近の10件を削除 (⌘D)";
+"panel.trash.tooltip" = "最近の10件を削除";
 "panel.footer" = "1-9、0でペースト  •  ↑↓でナビゲート  •  ↵でペースト  •  ⎋で閉じる";
 "panel.empty" = "項目なし";
 "panel.no_results" = "結果なし";
@@ -55,6 +55,7 @@
 "menu.shortcut" = "ショートカット";
 "shortcut.title" = "設定";
 "shortcut.open_panel" = "クイックパネルを開く";
+"shortcut.delete_last10" = "最近の10件を削除";
 "shortcut.record" = "記録";
 "shortcut.stop" = "停止";
 "shortcut.reset" = "リセット";
