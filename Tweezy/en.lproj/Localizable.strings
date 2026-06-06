@@ -41,6 +41,12 @@
 "settings.sensitive.show" = "Show sensitive data";
 "settings.sensitive.show.hint" = "Display unmasked in the clipboard panel";
 
+/* Excluded apps */
+"menu.exclude_app" = "Exclude %@";
+"menu.unexclude_app" = "Don't exclude %@";
+"settings.excluded_apps" = "Excluded Apps";
+"settings.excluded_apps.empty" = "No excluded apps";
+
 /* Shortcut */
 "menu.shortcut" = "Shortcut";
 "shortcut.title" = "Settings";

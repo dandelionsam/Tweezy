@@ -24,14 +24,17 @@ class ClipboardMonitor {
         if ClipboardStore.shared.skipNextClipboardChange {
             ClipboardStore.shared.skipNextClipboardChange = false; return
         }
-        let frontApp = NSWorkspace.shared.frontmostApplication?.localizedName
+        let frontRunningApp = NSWorkspace.shared.frontmostApplication
+        if let bundleID = frontRunningApp?.bundleIdentifier,
+           ExcludedAppsSettings.shared.isExcluded(bundleID) { return }
+        let frontAppName = frontRunningApp?.localizedName
         if let string = pb.string(forType: .string), !string.isEmpty {
-            let item = ClipboardItem(content: .text(string), appName: frontApp)
+            let item = ClipboardItem(content: .text(string), appName: frontAppName)
             DispatchQueue.main.async { ClipboardStore.shared.add(item) }
             return
         }
         if let imageData = pb.data(forType: .tiff) ?? pb.data(forType: .png) {
-            let item = ClipboardItem(content: .image(imageData), appName: frontApp)
+            let item = ClipboardItem(content: .image(imageData), appName: frontAppName)
             DispatchQueue.main.async { ClipboardStore.shared.add(item) }
         }
     }

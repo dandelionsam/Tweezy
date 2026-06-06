@@ -45,6 +45,12 @@
 "settings.version" = "Versión";
 "settings.shortcuts" = "Atajos";
 
+/* Apps excluidas */
+"menu.exclude_app" = "Excluir %@";
+"menu.unexclude_app" = "No excluir %@";
+"settings.excluded_apps" = "Apps excluidas";
+"settings.excluded_apps.empty" = "Ninguna app excluida";
+
 /* Shortcut */
 "menu.shortcut" = "Atajo";
 "shortcut.title" = "Ajustes";

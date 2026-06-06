@@ -45,6 +45,12 @@
 "settings.version" = "버전";
 "settings.shortcuts" = "단축키";
 
+/* 제외된 앱 */
+"menu.exclude_app" = "%@ 제외";
+"menu.unexclude_app" = "%@ 제외 해제";
+"settings.excluded_apps" = "제외된 앱";
+"settings.excluded_apps.empty" = "제외된 앱 없음";
+
 /* Shortcut */
 "menu.shortcut" = "단축키";
 "shortcut.title" = "설정";

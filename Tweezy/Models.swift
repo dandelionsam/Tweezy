@@ -142,6 +142,41 @@ class ClipboardStore: ObservableObject {
     }
 }
 
+// MARK: - ExcludedAppsSettings
+
+class ExcludedAppsSettings: ObservableObject {
+    static let shared = ExcludedAppsSettings()
+
+    @Published var excludedBundleIDs: Set<String> {
+        didSet { UserDefaults.standard.set(Array(excludedBundleIDs), forKey: "excludedBundleIDs") }
+    }
+
+    private init() {
+        let saved = UserDefaults.standard.stringArray(forKey: "excludedBundleIDs") ?? []
+        excludedBundleIDs = Set(saved)
+    }
+
+    func add(_ bundleID: String) { excludedBundleIDs.insert(bundleID) }
+    func remove(_ bundleID: String) { excludedBundleIDs.remove(bundleID) }
+    func isExcluded(_ bundleID: String) -> Bool { excludedBundleIDs.contains(bundleID) }
+
+    func appName(for bundleID: String) -> String {
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
+            if let name = Bundle(url: url)?.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String { return name }
+            if let name = Bundle(url: url)?.object(forInfoDictionaryKey: "CFBundleName") as? String { return name }
+            return url.deletingPathExtension().lastPathComponent
+        }
+        return bundleID
+    }
+
+    func appIcon(for bundleID: String) -> NSImage {
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
+            return NSWorkspace.shared.icon(forFile: url.path)
+        }
+        return NSImage(systemSymbolName: "app", accessibilityDescription: nil) ?? NSImage()
+    }
+}
+
 // MARK: - SensitiveDataSettings
 
 class SensitiveDataSettings: ObservableObject {

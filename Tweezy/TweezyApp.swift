@@ -15,13 +15,16 @@ struct TweezyApp: App {
 
 // MARK: - AppDelegate
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var statusItem: NSStatusItem?
     var clipboardMonitor: ClipboardMonitor?
     var hotkeyManager: GlobalHotkeyManager?
     var settingsWindow: NSWindow?
     var tagManagerWindow: NSWindow?
     var shortcutWindow: NSWindow?
+
+    var lastForegroundApp: NSRunningApplication?
+    private let trayMenu = NSMenu()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -37,11 +40,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        statusItem?.menu = buildMenu()
+        trayMenu.delegate = self
+        populateMenu(trayMenu)
+        statusItem?.menu = trayMenu
 
         NotificationCenter.default.addObserver(
             self, selector: #selector(rebuildMenu),
             name: .clipboardStoreDidChange, object: nil
+        )
+
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self, selector: #selector(activeAppChanged(_:)),
+            name: NSWorkspace.didActivateApplicationNotification, object: nil
         )
 
         hotkeyManager = GlobalHotkeyManager()
@@ -52,6 +62,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         clipboardMonitor?.start()
 
         askLoginItemIfNeeded()
+    }
+
+    @objc private func activeAppChanged(_ notification: Notification) {
+        guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
+              app.bundleIdentifier != Bundle.main.bundleIdentifier else { return }
+        lastForegroundApp = app
     }
 
     // MARK: - Login item
@@ -96,10 +112,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Menu construction
 
-    @objc func rebuildMenu() { statusItem?.menu = buildMenu() }
+    @objc func rebuildMenu() { populateMenu(trayMenu) }
 
-    func buildMenu() -> NSMenu {
-        let menu = NSMenu()
+    func menuNeedsUpdate(_ menu: NSMenu) { populateMenu(menu) }
+
+    func populateMenu(_ menu: NSMenu) {
+        menu.removeAllItems()
 
         let total = ClipboardStore.shared.items.count
         let countLabel = total == 1
@@ -116,12 +134,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(.separator())
 
+        if let app = lastForegroundApp, let bundleID = app.bundleIdentifier {
+            let appName = app.localizedName ?? bundleID
+            let isExcluded = ExcludedAppsSettings.shared.isExcluded(bundleID)
+            let titleKey = isExcluded ? "menu.unexclude_app" : "menu.exclude_app"
+            let title = String(format: NSLocalizedString(titleKey, comment: ""), appName)
+            let excludeItem = NSMenuItem(title: title, action: #selector(toggleExcludeApp(_:)), keyEquivalent: "")
+            excludeItem.target = self
+            excludeItem.representedObject = bundleID
+            excludeItem.image = NSImage(systemSymbolName: isExcluded ? "checkmark.circle" : "nosign",
+                                        accessibilityDescription: nil)
+            menu.addItem(excludeItem)
+            menu.addItem(.separator())
+        }
+
         let clearItem = NSMenuItem(
             title: NSLocalizedString("menu.clear_all", comment: ""),
             action: #selector(clearAll), keyEquivalent: ""
         )
         clearItem.target = self
-        clearItem.image = NSImage(systemSymbolName: "nosign", accessibilityDescription: nil)
+        clearItem.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
         menu.addItem(clearItem)
 
         let settingsItem = NSMenuItem(
@@ -140,8 +172,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
         quitItem.image = NSImage(systemSymbolName: "power", accessibilityDescription: nil)
         menu.addItem(quitItem)
-
-        return menu
     }
 
     // MARK: - Clipboard menu item (tray)
@@ -256,6 +286,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         AXIsProcessTrustedWithOptions(options)
     }
 
+    @objc func toggleExcludeApp(_ sender: NSMenuItem) {
+        guard let bundleID = sender.representedObject as? String else { return }
+        let settings = ExcludedAppsSettings.shared
+        if settings.isExcluded(bundleID) { settings.remove(bundleID) } else { settings.add(bundleID) }
+        rebuildMenu()
+    }
+
     @objc func clearAll() {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("alert.clear.title", comment: "")
@@ -268,7 +305,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func openShortcutSettings() {
         openAuxWindow(title: NSLocalizedString("shortcut.title", comment: ""),
-                      size: NSSize(width: 420, height: 500),
+                      size: NSSize(width: 420, height: 640),
                       window: &shortcutWindow) {
             ShortcutSettingsView(onSave: { [weak self] in
                 self?.reRegisterHotkey()
@@ -950,9 +987,16 @@ struct ShortcutSettingsView: View {
                 }
 
                 Spacer(minLength: 20)
+
+                // Excluded apps section
+                SettingsSectionCard(title: NSLocalizedString("settings.excluded_apps", comment: "")) {
+                    ExcludedAppsSection()
+                }
+
+                Spacer(minLength: 20)
             }
         }
-        .frame(width: 420, height: 500)
+        .frame(width: 420, height: 640)
     }
 }
 
@@ -1016,6 +1060,47 @@ struct SensitiveSettingsSection: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
+        }
+    }
+}
+
+// MARK: - ExcludedAppsSection
+
+struct ExcludedAppsSection: View {
+    @ObservedObject private var settings = ExcludedAppsSettings.shared
+
+    private var sortedBundleIDs: [String] {
+        settings.excludedBundleIDs.sorted { settings.appName(for: $0) < settings.appName(for: $1) }
+    }
+
+    var body: some View {
+        if settings.excludedBundleIDs.isEmpty {
+            Text(NSLocalizedString("settings.excluded_apps.empty", comment: ""))
+                .font(.system(size: 13))
+                .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+        } else {
+            ForEach(Array(sortedBundleIDs.enumerated()), id: \.element) { index, bundleID in
+                if index > 0 { Divider() }
+                HStack(spacing: 8) {
+                    Image(nsImage: settings.appIcon(for: bundleID))
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                    Text(settings.appName(for: bundleID))
+                        .font(.system(size: 13))
+                    Spacer()
+                    Button(action: { settings.remove(bundleID) }) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 11, weight: .semibold))
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+            }
         }
     }
 }

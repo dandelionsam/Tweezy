@@ -45,6 +45,12 @@
 "settings.version" = "バージョン";
 "settings.shortcuts" = "ショートカット";
 
+/* 除外アプリ */
+"menu.exclude_app" = "%@ を除外";
+"menu.unexclude_app" = "%@ の除外を解除";
+"settings.excluded_apps" = "除外アプリ";
+"settings.excluded_apps.empty" = "除外されたアプリはありません";
+
 /* Shortcut */
 "menu.shortcut" = "ショートカット";
 "shortcut.title" = "設定";

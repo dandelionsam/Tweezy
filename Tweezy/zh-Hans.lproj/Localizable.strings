@@ -45,6 +45,12 @@
 "settings.version" = "版本";
 "settings.shortcuts" = "快捷键";
 
+/* 已排除的应用 */
+"menu.exclude_app" = "排除 %@";
+"menu.unexclude_app" = "取消排除 %@";
+"settings.excluded_apps" = "已排除的应用";
+"settings.excluded_apps.empty" = "没有已排除的应用";
+
 /* Shortcut */
 "menu.shortcut" = "快捷键";
 "shortcut.title" = "设置";

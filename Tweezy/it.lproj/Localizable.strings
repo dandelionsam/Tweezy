@@ -41,6 +41,12 @@
 "settings.sensitive.show" = "Mostra dati sensibili";
 "settings.sensitive.show.hint" = "Visualizza senza mascheramento nel pannello";
 
+/* App escluse */
+"menu.exclude_app" = "Escludi %@";
+"menu.unexclude_app" = "Rimuovi esclusione per %@";
+"settings.excluded_apps" = "App escluse";
+"settings.excluded_apps.empty" = "Nessuna app esclusa";
+
 /* Shortcut */
 "menu.shortcut" = "Scorciatoia";
 "shortcut.title" = "Impostazioni";

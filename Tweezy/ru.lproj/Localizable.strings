@@ -45,6 +45,12 @@
 "settings.version" = "Версия";
 "settings.shortcuts" = "Сочетания клавиш";
 
+/* Исключённые приложения */
+"menu.exclude_app" = "Исключить %@";
+"menu.unexclude_app" = "Не исключать %@";
+"settings.excluded_apps" = "Исключённые приложения";
+"settings.excluded_apps.empty" = "Нет исключённых приложений";
+
 /* Shortcut */
 "menu.shortcut" = "Сочетание клавиш";
 "shortcut.title" = "Настройки";
