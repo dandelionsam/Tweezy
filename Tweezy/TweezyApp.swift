@@ -192,6 +192,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return s.range(of: pattern, options: .regularExpression) != nil
     }
 
+    static func isURL(_ s: String) -> Bool {
+        let t = s.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let url = URL(string: t),
+              let scheme = url.scheme?.lowercased(),
+              (scheme == "http" || scheme == "https"),
+              url.host != nil else { return false }
+        return true
+    }
+
     static func colorDotImage(color: NSColor, size: CGFloat) -> NSImage {
         let img = NSImage(size: NSSize(width: size, height: size))
         img.lockFocus()
@@ -291,6 +300,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 extension AppDelegate {
     static func isHexColorStatic(_ s: String) -> Bool { isHexColor(s) }
     static func colorDotImageStatic(color: NSColor, size: CGFloat) -> NSImage { colorDotImage(color: color, size: size) }
+    static func isURLStatic(_ s: String) -> Bool { isURL(s) }
 }
 
 // MARK: - QuickPickPanel
@@ -308,6 +318,8 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     private var pendingPasteID: UUID? = nil
     private var mouseMonitor: Any?
     private var keyMonitor: Any?
+    private var flagsMonitor: Any?
+    private var isCmdDown: Bool = false
 
     var onPaste: ((ClipboardItem) -> Void)?
     var onCopy:  ((ClipboardItem) -> Void)?
@@ -433,6 +445,15 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
             guard let self, self.isVisible else { return event }
             if event.window !== self { self.closePanel(); return nil }; return event
         }
+        flagsMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            guard let self else { return event }
+            let cmdNow = event.modifierFlags.contains(.command)
+            if cmdNow != self.isCmdDown {
+                self.isCmdDown = cmdNow
+                self.updateCellsForCmdState()
+            }
+            return event
+        }
         NotificationCenter.default.addObserver(self, selector: #selector(appDidResignActive),
                                                 name: NSApplication.didResignActiveNotification, object: nil)
     }
@@ -442,6 +463,8 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     func closePanel() {
         if let m = mouseMonitor { NSEvent.removeMonitor(m); mouseMonitor = nil }
         if let k = keyMonitor   { NSEvent.removeMonitor(k); keyMonitor = nil }
+        if let f = flagsMonitor { NSEvent.removeMonitor(f); flagsMonitor = nil }
+        isCmdDown = false
         NotificationCenter.default.removeObserver(self, name: NSApplication.didResignActiveNotification, object: nil)
         ClipboardStore.shared.searchText = ""
         ClipboardStore.shared.matchCase  = false
@@ -489,6 +512,7 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
             ?? QuickPickCell(identifier: cellID)
         cell.configure(item: rowContent(at: row), query: query,
                        matchCase: ClipboardStore.shared.matchCase, index: row)
+        cell.updateLinkIcon(isCmdDown: isCmdDown, animated: false)
         return cell
     }
 
@@ -544,7 +568,16 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
     private func handleReturn() {
         let row = tableView.selectedRow >= 0 ? tableView.selectedRow : 0
         guard row < totalRows else { return }
-        closePanel(); onPaste?(rowContent(at: row))
+        let item = rowContent(at: row)
+        let cmdHeld = NSEvent.modifierFlags.contains(.command)
+        if cmdHeld, case .text(let s) = item.content,
+           AppDelegate.isURLStatic(s),
+           let url = URL(string: s.trimmingCharacters(in: .whitespacesAndNewlines)) {
+            closePanel()
+            NSWorkspace.shared.open(url)
+            return
+        }
+        closePanel(); onPaste?(item)
     }
 
     private func flashRow(_ row: Int) {
@@ -560,11 +593,68 @@ class QuickPickPanel: NSWindow, NSTableViewDataSource, NSTableViewDelegate, NSSe
         }
     }
 
+    private func updateCellsForCmdState() {
+        for row in 0..<totalRows {
+            if let cell = tableView.view(atColumn: 0, row: row, makeIfNecessary: false) as? QuickPickCell {
+                cell.updateLinkIcon(isCmdDown: isCmdDown)
+            }
+        }
+    }
+
     // MARK: - Keyboard shortcuts
+
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown {
+            let mods = event.modifierFlags.intersection([.command, .option, .control, .shift])
+            if mods == .command {
+                // CMD+Return → open URL if selected item is a URL
+                if event.keyCode == 36 {
+                    let row = tableView.selectedRow >= 0 ? tableView.selectedRow : 0
+                    if row < totalRows,
+                       case .text(let s) = rowContent(at: row).content,
+                       AppDelegate.isURLStatic(s),
+                       let url = URL(string: s.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                        closePanel(); NSWorkspace.shared.open(url); return
+                    }
+                }
+                // CMD+digit → open URL at that index
+                let chars = event.charactersIgnoringModifiers ?? ""
+                if chars.count == 1, let ch = chars.first, ch.isNumber {
+                    let digit = ch == "0" ? 9 : (Int(String(ch)) ?? 1) - 1
+                    if digit >= 0, digit < items.count,
+                       case .text(let s) = items[digit].content,
+                       AppDelegate.isURLStatic(s),
+                       let url = URL(string: s.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                        closePanel(); NSWorkspace.shared.open(url); return
+                    }
+                }
+            }
+        }
+        super.sendEvent(event)
+    }
 
     override func keyDown(with event: NSEvent) {
         let chars = event.characters ?? ""
         if event.keyCode == 36 { handleReturn(); return }
+
+        // CMD + digit → open URL in browser (only for URL items)
+        let mods = event.modifierFlags.intersection([.command, .option, .control, .shift])
+        let charsIgnoring = event.charactersIgnoringModifiers ?? ""
+        if mods == .command, charsIgnoring.count == 1, let ch = charsIgnoring.first, ch.isNumber {
+            let digit = ch == "0" ? 9 : (Int(String(ch)) ?? 1) - 1
+            if digit >= 0, digit < items.count {
+                let item = items[digit]
+                if case .text(let s) = item.content,
+                   AppDelegate.isURLStatic(s),
+                   let url = URL(string: s.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                    closePanel()
+                    NSWorkspace.shared.open(url)
+                    return
+                }
+            }
+            super.keyDown(with: event); return
+        }
+
         guard chars.count == 1, let ch = chars.first, ch.isNumber,
               event.modifierFlags.intersection([.command, .option, .control]).isEmpty else {
             super.keyDown(with: event); return
@@ -594,9 +684,9 @@ class KeyPassTableView: NSTableView {
     override func keyDown(with event: NSEvent) {
         let chars = event.characters ?? ""
         if event.keyCode == 36 { window?.keyDown(with: event); return }
-        if chars.count == 1, let ch = chars.first, ch.isNumber,
-           event.modifierFlags.intersection([.command, .option, .control]).isEmpty {
-            window?.keyDown(with: event); return
+        if chars.count == 1, let ch = chars.first, ch.isNumber {
+            let mods = event.modifierFlags.intersection([.command, .option, .control])
+            if mods.isEmpty || mods == .command { window?.keyDown(with: event); return }
         }
         if event.keyCode == 53 { window?.keyDown(with: event); return }
         super.keyDown(with: event)
@@ -620,9 +710,11 @@ class KeyPassTableView: NSTableView {
 // MARK: - QuickPickCell
 
 class QuickPickCell: NSTableCellView {
-    private let numLabel  = NSTextField(labelWithString: "")
-    private let iconView  = NSImageView()
-    private let textLabel = NSTextField(labelWithString: "")
+    private let numLabel    = NSTextField(labelWithString: "")
+    private let iconView    = NSImageView()
+    private let textLabel   = NSTextField(labelWithString: "")
+    private let linkIconView = NSImageView()
+    private var isURLItem   = false
 
     init(identifier: NSUserInterfaceItemIdentifier) {
         super.init(frame: .zero); self.identifier = identifier
@@ -642,6 +734,13 @@ class QuickPickCell: NSTableCellView {
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(textLabel)
 
+        linkIconView.translatesAutoresizingMaskIntoConstraints = false
+        linkIconView.imageScaling = .scaleProportionallyDown
+        linkIconView.image = NSImage(systemSymbolName: "arrow.up.right.square", accessibilityDescription: nil)
+        linkIconView.contentTintColor = .controlAccentColor
+        linkIconView.alphaValue = 0
+        addSubview(linkIconView)
+
         NSLayoutConstraint.activate([
             numLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
             numLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -653,8 +752,13 @@ class QuickPickCell: NSTableCellView {
             iconView.heightAnchor.constraint(equalToConstant: 14),
 
             textLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 6),
-            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
+            textLabel.trailingAnchor.constraint(equalTo: linkIconView.leadingAnchor, constant: -4),
             textLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+
+            linkIconView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            linkIconView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            linkIconView.widthAnchor.constraint(equalToConstant: 14),
+            linkIconView.heightAnchor.constraint(equalToConstant: 14),
         ])
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -668,6 +772,8 @@ class QuickPickCell: NSTableCellView {
         let isHexColor = AppDelegate.isHexColorStatic(trimmed)
         let isPassword = !isHexColor && SensitiveDataSettings.shared.isSensitive(trimmed)
         let shouldMask = isPassword && !SensitiveDataSettings.shared.showSensitiveData
+        isURLItem = !isPassword && AppDelegate.isURLStatic(trimmed)
+        linkIconView.alphaValue = 0
 
         var display = shouldMask
             ? String(repeating: "•", count: min(rawText.count, 20))
@@ -695,6 +801,18 @@ class QuickPickCell: NSTableCellView {
             textLabel.attributedStringValue = highlightedString(display, query: query, matchCase: matchCase)
         } else {
             textLabel.stringValue = display; textLabel.textColor = .labelColor
+        }
+    }
+
+    func updateLinkIcon(isCmdDown: Bool, animated: Bool = true) {
+        let target: CGFloat = (isCmdDown && isURLItem) ? 1 : 0
+        if animated {
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = 0.15
+                linkIconView.animator().alphaValue = target
+            }
+        } else {
+            linkIconView.alphaValue = target
         }
     }
 
