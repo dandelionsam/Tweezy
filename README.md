@@ -2,10 +2,11 @@
 
 # Tweezy
 
-A lightweight macOS menu bar app that monitors your clipboard and provides quick-access actions via a global hotkey.
+A lightweight macOS menu bar app that monitors your clipboard and provides quick-access actions via a configurable global hotkey.
 
 ## ↘️ Installation
-After you have downloaded your preferred version from the release tab, and it does not open with the traditional methods, you can try these commands:
+Download the latest zip from the release tab and install it like a regular macOs application.
+If it does not open with the traditional methods, you can try these commands:
 ```
 xattr -rd com.apple.quarantine ~/path/to/download/Tweezy.app
 chmod +x ~/path/to/download/Tweezy.app/Contents/MacOS/*
@@ -21,10 +22,6 @@ Tweezy requires the following macOS permission:
 
 On first launch, macOS will prompt you to grant Accessibility access. 
 You can manage this at any time in: **System Settings → Privacy & Security → Accessibility**
-
-## 📦 Dependencies
-
-Tweezy has **no external dependencies**. It is built entirely with native Apple frameworks.
 
 ## 🗣️ Localization
 
