@@ -4,9 +4,11 @@
 
 A lightweight macOS menu bar app that monitors your clipboard and provides quick-access actions via a configurable global hotkey.
 
-![macOS](https://img.shields.io/badge/macOS-<!-- version, e.g. 13%2B -->-black)
-![Swift](https://img.shields.io/badge/Swift-<!-- version, e.g. 5.9 -->-orange)
-![License](https://img.shields.io/badge/license-<!-- type, e.g. MIT -->-blue)
+![macOS](https://img.shields.io/badge/macOS-13%2B-black)
+![Swift](https://img.shields.io/badge/Swift-5.9-orange)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
+<img width="1280" height="720" alt="demo" src="https://github.com/user-attachments/assets/8c119817-bfd7-4469-ab6b-46902675ac4c" />
 
 ## Features
 
