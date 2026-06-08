@@ -59,7 +59,3 @@ The app is localized in the following languages:
 | 🇷🇺 `ru` | Russian |
 | 🇪🇸 `es` | Spanish |
 | 🇯🇵 `ja` | Japanese |
-
-## 📋 License
-
-Copyright © 2026 Tweezy. All rights reserved.
