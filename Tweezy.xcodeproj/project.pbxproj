@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -37,6 +37,10 @@
 		FC77044A2F7567C200FD10D5 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		FCF876CF2FD6FB0100F92F2B /* assets */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = assets; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		A300F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -60,6 +64,7 @@
 		A301 /* Tweezy */ = {
 			isa = PBXGroup;
 			children = (
+				FCF876CF2FD6FB0100F92F2B /* assets */,
 				A101 /* TweezyApp.swift */,
 				A102 /* ContentView.swift */,
 				A103 /* Models.swift */,
@@ -95,6 +100,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FCF876CF2FD6FB0100F92F2B /* assets */,
 			);
 			name = Tweezy;
 			productName = Tweezy;
